@@ -464,16 +464,24 @@ type DynamicPricePoint = {
   nitroBySource: Record<string, number>;
 };
 
-type SavedDynamicScenario = {
+type SavedCurveScenario = {
   id: string;
   color: string;
   label: string;
-  cornPrice: number;
-  nitroPrice: number;
-  fertilizerSource: string;
   points: DualRatePoint[];
   eonrX: number | null;
   profitBandIntervals: [number, number][];
+};
+
+type SavedDynamicScenario = SavedCurveScenario & {
+  cornPrice: number;
+  nitroPrice: number;
+  fertilizerSource: string;
+};
+
+type SavedOptimizeScenario = SavedCurveScenario & {
+  cornPrice: number;
+  nitroPrice: number;
 };
 
 /**
@@ -1404,6 +1412,7 @@ export default function Home() {
   const [dynamicCurvePricing, setDynamicCurvePricing] = useState<{ cornPrice: number; nitroPrice: number } | null>(
     null
   );
+  const [savedOptimizeScenarios, setSavedOptimizeScenarios] = useState<SavedOptimizeScenario[]>([]);
   const [dynamicCurveLoading, setDynamicCurveLoading] = useState(false);
   const [dynamicCurveError, setDynamicCurveError] = useState<string | null>(null);
   const [savedDynamicScenarios, setSavedDynamicScenarios] = useState<SavedDynamicScenario[]>([]);
@@ -1533,6 +1542,7 @@ export default function Home() {
       setDynamicCurvePricing(null);
       setDynamicCurveLoading(false);
       setDynamicCurveError(null);
+      setSavedOptimizeScenarios([]);
       setSavedDynamicScenarios([]);
       setShowConflictTooltip(false);
       if (continueTimerRef.current !== null) {
@@ -1592,6 +1602,7 @@ export default function Home() {
     setDynamicCurvePricing(null);
     setDynamicCurveLoading(false);
     setDynamicCurveError(null);
+    setSavedOptimizeScenarios([]);
     setSavedDynamicScenarios([]);
     setShowConflictTooltip(false);
 
@@ -1978,6 +1989,24 @@ export default function Home() {
     const nHigh = Math.max(...intervals.map((seg) => seg[1]));
     return { nLow, nHigh };
   }, [dualCurveData, eonrRow]);
+  const activeOptimizeProfitBandIntervals = useMemo(() => {
+    if (!eonrRow || dualCurveData.length < 2) return [];
+    const eonrPt = interpolateDualAtX(dualCurveData, eonrRow.nitroLbAc);
+    if (!eonrPt || !Number.isFinite(eonrPt.profit)) return [];
+    return profitAtLeastIntervals(dualCurveData, eonrPt.profit - 1);
+  }, [dualCurveData, eonrRow]);
+  const optimizeComparisonScenarios = useMemo(
+    () =>
+      savedOptimizeScenarios.map((scenario) => ({
+        id: scenario.id,
+        label: scenario.label,
+        points: scenario.points,
+        color: scenario.color,
+        eonrX: scenario.eonrX,
+        profitBandIntervals: scenario.profitBandIntervals,
+      })),
+    [savedOptimizeScenarios]
+  );
 
   const eonrGaugeScale = useMemo(() => {
     const min = 0;
@@ -1990,6 +2019,32 @@ export default function Home() {
     if (showAONR) return;
 
     setContinueEnabled(true);
+  };
+
+  const handleSaveOptimizeScenario = () => {
+    if (selectedCellId === null || dualCurveData.length < 2 || !eonrRow) return;
+    if (savedOptimizeScenarios.length >= 5) return;
+    const usedColors = new Set(savedOptimizeScenarios.map((s) => s.color));
+    const nextColor =
+      DYNAMIC_SCENARIO_COLORS.find((color) => !usedColors.has(color)) ??
+      DYNAMIC_SCENARIO_COLORS[savedOptimizeScenarios.length % DYNAMIC_SCENARIO_COLORS.length]!;
+    const scenario: SavedOptimizeScenario = {
+      id: `opt-scenario-${Date.now()}-${Math.round(Math.random() * 1e6)}`,
+      color: nextColor,
+      label: `Cell ${selectedCellId} · N $${nPrice.toFixed(2)} · Corn $${cornPrice.toFixed(2)}`,
+      cornPrice,
+      nitroPrice: nPrice,
+      points: dualCurveData.map((p) => ({ ...p })),
+      eonrX: eonrRow.nitroLbAc,
+      profitBandIntervals: activeOptimizeProfitBandIntervals.map(
+        (seg) => [seg[0], seg[1]] as [number, number]
+      ),
+    };
+    setSavedOptimizeScenarios((prev) => [...prev, scenario]);
+  };
+
+  const handleRemoveOptimizeScenario = (id: string) => {
+    setSavedOptimizeScenarios((prev) => prev.filter((scenario) => scenario.id !== id));
   };
 
   const handleSaveDynamicScenario = () => {
@@ -2164,6 +2219,15 @@ export default function Home() {
                 paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))',
               }}
             >
+            <Image
+              src="/logos/NrateIQ_logo_v6.svg?v=20260429"
+              alt="NrateIQ logo"
+              width={2600}
+              height={892}
+              className="mb-5 h-64 w-auto object-contain sm:h-72 md:mb-7 md:h-80"
+              unoptimized
+              priority
+            />
             <h1 className="mb-6 max-w-4xl font-sans text-2xl font-black uppercase leading-tight tracking-tight text-[#CEB888] sm:mb-8 sm:text-3xl md:mb-10 md:text-5xl md:leading-[1.15] md:tracking-wide lg:text-6xl">
               <span className="block">Optimum nitrogen rate</span>
               <span className="mt-2 block text-white md:mt-3">for corn</span>
@@ -2250,23 +2314,29 @@ export default function Home() {
             transition={{ duration: 0.2 }}
           >
             <nav className="sticky top-0 z-[1200] flex items-center justify-between border-b-4 border-black bg-[#CEB888] p-4 shadow-md">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <Image
-                  src="/logos/indnrate-new.png"
-                  alt="INDNRATE logo"
-                  width={80}
-                  height={80}
-                  className="h-12 w-12 object-contain md:h-16 md:w-16"
+                  src="/logos/purdue_onfarm.jpeg"
+                  alt="Purdue On-Farm"
+                  className="ml-2 h-20 w-auto object-contain mix-blend-multiply md:h-24"
+                  width={360}
+                  height={104}
                   priority
                 />
-                <Image
-                  src="/logos/purdue-wordmark.svg"
-                  alt="Purdue University"
-                  className="h-8 w-auto md:h-10"
-                  width={160}
-                  height={40}
-                  priority
-                />
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/logos/NrateIQ_logo_v6.svg?v=20260429-transparent"
+                    alt="NRate IQ logo"
+                    className="h-24 w-auto object-contain md:h-28"
+                    width={560}
+                    height={192}
+                    unoptimized
+                    priority
+                  />
+                  <span className="text-sm font-black uppercase tracking-[0.12em] text-slate-900 md:text-base">
+                    NRate IQ
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() => setShowDashboard(false)}
@@ -2461,11 +2531,68 @@ export default function Home() {
                               Backend error: {cellDataError}
                             </p>
                           )}
+                          {!cellDataError && (
+                            <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                                  Saved scenarios ({savedOptimizeScenarios.length}/5)
+                                </p>
+                                <button
+                                  type="button"
+                                  onClick={handleSaveOptimizeScenario}
+                                  disabled={
+                                    selectedCellId === null ||
+                                    dualCurveData.length < 2 ||
+                                    savedOptimizeScenarios.length >= 5
+                                  }
+                                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] ${
+                                    selectedCellId === null ||
+                                    dualCurveData.length < 2 ||
+                                    savedOptimizeScenarios.length >= 5
+                                      ? 'cursor-not-allowed bg-slate-200 text-slate-500'
+                                      : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                                  }`}
+                                >
+                                  Save scenario
+                                </button>
+                              </div>
+                              {savedOptimizeScenarios.length > 0 ? (
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {savedOptimizeScenarios.map((scenario) => (
+                                    <div
+                                      key={scenario.id}
+                                      className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-700"
+                                    >
+                                      <span
+                                        className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                        style={{ backgroundColor: scenario.color }}
+                                        aria-hidden
+                                      />
+                                      <span className="truncate">{scenario.label}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveOptimizeScenario(scenario.id)}
+                                        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-700"
+                                        aria-label={`Remove ${scenario.label}`}
+                                      >
+                                        X
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="mt-2 text-xs text-slate-500">
+                                  Save up to five scenarios to compare fixed curves.
+                                </p>
+                              )}
+                            </div>
+                          )}
                           <div className="relative">
                             {!cellDataError && dualCurveData.length > 1 && (
                               <DualAxisNitrogenChart
                                 points={dualCurveData}
                                 eonrX={eonrRow?.nitroLbAc ?? null}
+                                comparisonScenarios={optimizeComparisonScenarios}
                                 isMobile={isMobile}
                               />
                             )}
@@ -2910,6 +3037,34 @@ export default function Home() {
                 </div>
               </div>
             </main>
+            <footer className="border-t border-slate-200 bg-white/80 px-6 py-5">
+              <div className="container mx-auto flex flex-wrap items-center justify-center gap-6">
+                <Image
+                  src="/logos/IDAAS.png"
+                  alt="IDAAS"
+                  className="h-10 w-auto object-contain md:h-12 [image-rendering:-webkit-optimize-contrast]"
+                  width={244}
+                  height={80}
+                  unoptimized
+                />
+                <Image
+                  src="/logos/agronomy.png"
+                  alt="Agronomy"
+                  className="h-10 w-auto object-contain md:h-12 [image-rendering:-webkit-optimize-contrast]"
+                  width={200}
+                  height={80}
+                  unoptimized
+                />
+                <Image
+                  src="/logos/indnrate-new.png"
+                  alt="INDNRATE logo"
+                  className="h-[4.5rem] w-[4.5rem] object-contain md:h-[5rem] md:w-[5rem] [image-rendering:-webkit-optimize-contrast]"
+                  width={160}
+                  height={160}
+                  unoptimized
+                />
+              </div>
+            </footer>
           </motion.div>
         )}
       </AnimatePresence>
