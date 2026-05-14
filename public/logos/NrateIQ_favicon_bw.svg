@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350" role="img">
+  <title>NrateIQ</title>
+  <defs>
+    <radialGradient id="glow-bw" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hex-fill-bw" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a2a2a"/>
+      <stop offset="100%" stop-color="#0f0f0f"/>
+    </linearGradient>
+    <linearGradient id="hex-small-fill-bw" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a3a3a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="letter-bw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#a3a3a3"/>
+    </linearGradient>
+    <linearGradient id="letter-iq-bw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5f5f5"/>
+      <stop offset="100%" stop-color="#9ca3af"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="170" cy="170" rx="130" ry="130" fill="url(#glow-bw)"/>
+  <polygon
+    points="170,52 272,111 272,229 170,288 68,229 68,111"
+    fill="url(#hex-fill-bw)"
+    stroke="#737373"
+    stroke-width="1.5"
+    stroke-opacity="0.85"
+  />
+  <polygon
+    points="170,66 264,119 264,221 170,274 76,221 76,119"
+    fill="none"
+    stroke="#a3a3a3"
+    stroke-width="0.5"
+    stroke-opacity="0.35"
+  />
+  <text
+    x="164"
+    y="176"
+    font-size="136"
+    fill="url(#letter-bw)"
+    text-anchor="middle"
+    dominant-baseline="central"
+    letter-spacing="-2"
+    font-family="Syne, system-ui, sans-serif"
+    font-weight="800"
+  >
+    N
+  </text>
+  <polygon
+    points="268,58 301,77 301,115 268,134 235,115 235,77"
+    fill="url(#hex-small-fill-bw)"
+    stroke="#737373"
+    stroke-width="1.5"
+    stroke-opacity="0.9"
+  />
+  <text
+    x="268"
+    y="97"
+    font-size="24"
+    fill="url(#letter-iq-bw)"
+    text-anchor="middle"
+    dominant-baseline="central"
+    letter-spacing="1.5"
+    font-family="Syne, system-ui, sans-serif"
+    font-weight="700"
+  >
+    IQ
+  </text>
+</svg>

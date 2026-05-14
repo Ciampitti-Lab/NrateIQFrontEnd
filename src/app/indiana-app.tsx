@@ -33,6 +33,13 @@ const LOADING_STATUS_MESSAGES = [
   '🚜 Finalizing your nitrogen response curve…',
 ] as const;
 
+const PLANTING_DATE_OPTIONS = [
+  'Before April 30',
+  'May 1–15',
+  'May 16–31',
+  'June 1–15',
+] as const;
+
 function ProviderTiles({ provider }: { provider: string }) {
   const map = useMap();
   const layerRef = useRef<import('leaflet').TileLayer | null>(null);
@@ -319,11 +326,14 @@ function CountiesLayer({
 
   const selectedNameRef = useRef<string | null>(selectedCountyName);
   const onLoadErrorRef = useRef(onLoadError);
-  onLoadErrorRef.current = onLoadError;
 
   useEffect(() => {
     selectedNameRef.current = selectedCountyName;
   }, [selectedCountyName]);
+
+  useEffect(() => {
+    onLoadErrorRef.current = onLoadError;
+  }, [onLoadError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -458,12 +468,6 @@ type EonrHistogramStats = {
   stdDev: number;
 };
 
-type DynamicPricePoint = {
-  dateIso: string;
-  cornPrice: number;
-  nitroBySource: Record<string, number>;
-};
-
 type SavedCurveScenario = {
   id: string;
   color: string;
@@ -471,12 +475,6 @@ type SavedCurveScenario = {
   points: DualRatePoint[];
   eonrX: number | null;
   profitBandIntervals: [number, number][];
-};
-
-type SavedDynamicScenario = SavedCurveScenario & {
-  cornPrice: number;
-  nitroPrice: number;
-  fertilizerSource: string;
 };
 
 type SavedOptimizeScenario = SavedCurveScenario & {
@@ -499,11 +497,9 @@ function computeEonrHistogramStats(bins: EonrHistogramBin[]): EonrHistogramStats
 
   const mid = (b: EonrHistogramBin) => (b.lo + b.hi) / 2;
   let sum = 0;
-  let sumSq = 0;
   for (const b of sorted) {
     const m = mid(b);
     sum += m * b.count;
-    sumSq += m * m * b.count;
   }
   const mean = sum / total;
   let sumDevSq = 0;
@@ -705,93 +701,7 @@ const REGION_DISPLAY_LABELS: Record<string, string> = {
   NE: 'North East',
   WC: 'West Center',
 };
-const DYNAMIC_SCENARIO_COLORS = ['#2563eb', '#d946ef', '#f59e0b', '#06b6d4', '#84cc16'] as const;
-
-function monthLabelFromIsoDate(isoDate: string): string {
-  const parsed = new Date(`${isoDate}T00:00:00`);
-  if (Number.isNaN(parsed.getTime())) return isoDate;
-  return parsed.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
-
-function fullDateLabelFromIsoDate(isoDate: string): string {
-  const parsed = new Date(`${isoDate}T00:00:00`);
-  if (Number.isNaN(parsed.getTime())) return isoDate;
-  return parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-function sliderTickLabelFromIsoDate(isoDate: string): string {
-  const parsed = new Date(`${isoDate}T00:00:00`);
-  if (Number.isNaN(parsed.getTime())) return isoDate;
-  return parsed.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: 'numeric',
-  });
-}
-
-function generateDynamicDateCandidates(startIso: string, endIso: string): string[] {
-  const start = new Date(`${startIso}T00:00:00Z`);
-  const end = new Date(`${endIso}T00:00:00Z`);
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start > end) return [];
-  const out: string[] = [];
-  const cursor = new Date(start);
-  while (cursor <= end) {
-    out.push(cursor.toISOString().slice(0, 10));
-    cursor.setUTCDate(cursor.getUTCDate() + 14);
-  }
-  return out;
-}
-
-const DEFAULT_NITRO_SOURCES = [
-  'Urea',
-  'Anhydrous Ammonia',
-  'Liquid Nitrogen 28',
-  'Liquid Nitrogen 32',
-] as const;
-
-function parseCornPricePayload(raw: unknown): number | null {
-  if (!Array.isArray(raw) || raw.length === 0) return null;
-  for (const row of raw) {
-    if (!row || typeof row !== 'object') continue;
-    const price = pickNumber(row as Record<string, unknown>, ['corn_price_bu', 'corn_price', 'price']);
-    if (price !== null && Number.isFinite(price)) return price;
-  }
-  return null;
-}
-
-function parseNitroPricePayload(raw: unknown): number | null {
-  if (!Array.isArray(raw) || raw.length === 0) return null;
-  for (const row of raw) {
-    if (!row || typeof row !== 'object') continue;
-    const price = pickNumber(row as Record<string, unknown>, ['nitro_price_lb', 'nitro_price', 'price']);
-    if (price !== null && Number.isFinite(price)) return price;
-  }
-  return null;
-}
-
-async function fetchJsonWithTimeout(
-  url: string,
-  signal: AbortSignal,
-  timeoutMs = 4000
-): Promise<unknown> {
-  const timeoutController = new AbortController();
-  const timeoutId = window.setTimeout(() => timeoutController.abort(), timeoutMs);
-  const onAbort = () => timeoutController.abort();
-  signal.addEventListener('abort', onAbort);
-  try {
-    const response = await fetch(url, {
-      signal: timeoutController.signal,
-      cache: 'no-store',
-    });
-    if (!response.ok) return null;
-    return (await response.json()) as unknown;
-  } catch {
-    return null;
-  } finally {
-    window.clearTimeout(timeoutId);
-    signal.removeEventListener('abort', onAbort);
-  }
-}
+const SCENARIO_COLORS = ['#2563eb', '#d946ef', '#f59e0b', '#06b6d4', '#84cc16'] as const;
 
 function parseHexRgb(hex: string): [number, number, number] | null {
   const m = /^#?([0-9a-fA-F]{6})$/.exec(hex.trim());
@@ -1393,7 +1303,7 @@ export default function Home() {
   const [nPrice, setNPrice] = useState(0.65);
   const [cornPrice, setCornPrice] = useState(4.5);
   const [showLocationOptions, setShowLocationOptions] = useState(false);
-  const [resultsSection, setResultsSection] = useState<'optimize' | 'trials' | 'dynamic'>('optimize');
+  const [resultsSection, setResultsSection] = useState<'optimize' | 'trials'>('optimize');
   const [mobileTrialsView, setMobileTrialsView] = useState<'map' | 'results'>('map');
   const [selectedCountyName, setSelectedCountyName] = useState<string | null>(null);
   const [selectedCountyRegion, setSelectedCountyRegion] = useState<string | null>(null);
@@ -1402,22 +1312,7 @@ export default function Home() {
   const [eonrHistogramLoading, setEonrHistogramLoading] = useState(false);
   const [eonrHistogramError, setEonrHistogramError] = useState<string | null>(null);
   const [selectedRegionMapColor, setSelectedRegionMapColor] = useState<string | null>(null);
-  const [dynamicPriceRows, setDynamicPriceRows] = useState<DynamicPricePoint[]>([]);
-  const [dynamicPriceLoading, setDynamicPriceLoading] = useState(false);
-  const [dynamicPriceError, setDynamicPriceError] = useState<string | null>(null);
-  const [dynamicPriceLoadAttempted, setDynamicPriceLoadAttempted] = useState(false);
-  const [dynamicDateIndex, setDynamicDateIndex] = useState(0);
-  const [dynamicNitrogenSource, setDynamicNitrogenSource] = useState<string>('');
-  const [dynamicSimulations, setDynamicSimulations] = useState<SimulationResult[] | null>(null);
-  const [dynamicCurvePricing, setDynamicCurvePricing] = useState<{ cornPrice: number; nitroPrice: number } | null>(
-    null
-  );
   const [savedOptimizeScenarios, setSavedOptimizeScenarios] = useState<SavedOptimizeScenario[]>([]);
-  const [dynamicCurveLoading, setDynamicCurveLoading] = useState(false);
-  const [dynamicCurveError, setDynamicCurveError] = useState<string | null>(null);
-  const [savedDynamicScenarios, setSavedDynamicScenarios] = useState<SavedDynamicScenario[]>([]);
-  const [showConflictTooltip, setShowConflictTooltip] = useState(false);
-  const [conflictTooltipLeftPct, setConflictTooltipLeftPct] = useState(0);
 
   const trialsRegionApiParam = useMemo(() => {
     const code = (selectedCountyRegion ?? selectedCountyName)?.trim();
@@ -1435,52 +1330,6 @@ export default function Home() {
   const pendingGeoCellIdRef = useRef<number | null>(null);
   /** Survives React Strict Mode’s double effect run so we don’t wipe geo-chosen cell on the 2nd pass. */
   const openedDashboardWithGeoRef = useRef(false);
-  const selectedDynamicPrice = useMemo(
-    () => (dynamicPriceRows.length > 0 ? dynamicPriceRows[Math.min(dynamicDateIndex, dynamicPriceRows.length - 1)]! : null),
-    [dynamicPriceRows, dynamicDateIndex]
-  );
-  const dynamicNitrogenSources = [...DEFAULT_NITRO_SOURCES];
-  const selectedDynamicNitroPrice = useMemo(() => {
-    if (!selectedDynamicPrice) return null;
-    if (dynamicNitrogenSource && Number.isFinite(selectedDynamicPrice.nitroBySource[dynamicNitrogenSource])) {
-      return selectedDynamicPrice.nitroBySource[dynamicNitrogenSource]!;
-    }
-    const fallback = dynamicNitrogenSources.find((src) =>
-      Number.isFinite(selectedDynamicPrice.nitroBySource[src])
-    );
-    return fallback ? selectedDynamicPrice.nitroBySource[fallback]! : null;
-  }, [selectedDynamicPrice, dynamicNitrogenSource, dynamicNitrogenSources]);
-  const dynamicSliderTicks = useMemo(() => {
-    if (dynamicPriceRows.length === 0) return [];
-    const tickCount = Math.min(6, dynamicPriceRows.length);
-    const rawIndexes = Array.from({ length: tickCount }, (_, i) =>
-      Math.round(((dynamicPriceRows.length - 1) * i) / Math.max(tickCount - 1, 1))
-    );
-    const uniqueIndexes = Array.from(new Set(rawIndexes)).sort((a, b) => a - b);
-    return uniqueIndexes.map((idx) => {
-      const row = dynamicPriceRows[idx]!;
-      const leftPct =
-        dynamicPriceRows.length <= 1 ? 0 : (idx / (dynamicPriceRows.length - 1)) * 100;
-      return {
-        idx,
-        leftPct,
-        label: sliderTickLabelFromIsoDate(row.dateIso),
-      };
-    });
-  }, [dynamicPriceRows]);
-  const dynamicSliderProgressPct = useMemo(() => {
-    if (dynamicPriceRows.length <= 1) return 0;
-    const clamped = Math.min(dynamicDateIndex, dynamicPriceRows.length - 1);
-    return (clamped / (dynamicPriceRows.length - 1)) * 100;
-  }, [dynamicPriceRows.length, dynamicDateIndex]);
-  const iranConflictStartPct = useMemo(() => {
-    if (dynamicPriceRows.length <= 1) return 0;
-    const conflictStartIso = '2026-03-20';
-    const idx = dynamicPriceRows.findIndex((row) => row.dateIso >= conflictStartIso);
-    if (idx < 0) return 100;
-    return (idx / (dynamicPriceRows.length - 1)) * 100;
-  }, [dynamicPriceRows]);
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setGeoSecureContext(window.isSecureContext);
@@ -1532,19 +1381,7 @@ export default function Home() {
       setEonrHistogramError(null);
       setEonrHistogramLoading(false);
       setSelectedRegionMapColor(null);
-      setDynamicPriceRows([]);
-      setDynamicPriceLoading(false);
-      setDynamicPriceError(null);
-      setDynamicPriceLoadAttempted(false);
-      setDynamicDateIndex(0);
-      setDynamicNitrogenSource('');
-      setDynamicSimulations(null);
-      setDynamicCurvePricing(null);
-      setDynamicCurveLoading(false);
-      setDynamicCurveError(null);
       setSavedOptimizeScenarios([]);
-      setSavedDynamicScenarios([]);
-      setShowConflictTooltip(false);
       if (continueTimerRef.current !== null) {
         window.clearTimeout(continueTimerRef.current);
         continueTimerRef.current = null;
@@ -1592,19 +1429,7 @@ export default function Home() {
     setEonrHistogramError(null);
     setEonrHistogramLoading(false);
     setSelectedRegionMapColor(null);
-    setDynamicPriceRows([]);
-    setDynamicPriceLoading(false);
-    setDynamicPriceError(null);
-    setDynamicPriceLoadAttempted(false);
-    setDynamicDateIndex(0);
-    setDynamicNitrogenSource('');
-    setDynamicSimulations(null);
-    setDynamicCurvePricing(null);
-    setDynamicCurveLoading(false);
-    setDynamicCurveError(null);
     setSavedOptimizeScenarios([]);
-    setSavedDynamicScenarios([]);
-    setShowConflictTooltip(false);
 
     if (continueTimerRef.current !== null) {
       window.clearTimeout(continueTimerRef.current);
@@ -1613,28 +1438,6 @@ export default function Home() {
     setShowBackendWakeUi(false);
     setLoadingWakeMessageIndex(0);
   }, [showDashboard]);
-
-  useEffect(() => {
-    if (!showDashboard || !showAONR) return;
-    if (dynamicPriceRows.length > 0 || dynamicPriceLoading || dynamicPriceLoadAttempted) return;
-
-    setDynamicPriceLoadAttempted(true);
-    setDynamicPriceError(null);
-    const dates = generateDynamicDateCandidates('2025-01-06', '2026-04-13');
-    if (dates.length === 0) {
-      setDynamicPriceError('No valid dates available for dynamic comparison.');
-      return;
-    }
-    setDynamicPriceRows(
-      dates.map((dateIso) => ({ dateIso, cornPrice: Number.NaN, nitroBySource: {} }))
-    );
-    setDynamicDateIndex((idx) => {
-      const apr13Idx = dates.findIndex((d) => d === '2026-04-13');
-      if (apr13Idx >= 0) return apr13Idx;
-      return Math.min(idx, dates.length - 1);
-    });
-    setDynamicNitrogenSource((current) => (current ? current : DEFAULT_NITRO_SOURCES[0]!));
-  }, [showDashboard, showAONR, dynamicPriceRows.length, dynamicPriceLoading, dynamicPriceLoadAttempted]);
 
   useEffect(() => {
     if (resultsSection === 'optimize') {
@@ -1756,127 +1559,6 @@ export default function Home() {
     return () => controller.abort();
   }, [selectedCellId, nPrice, cornPrice]);
 
-  useEffect(() => {
-    if (
-      !showDashboard ||
-      !showAONR ||
-      resultsSection !== 'dynamic' ||
-      !selectedDynamicPrice ||
-      !dynamicNitrogenSource
-    ) {
-      return;
-    }
-
-    const controller = new AbortController();
-    setDynamicPriceLoading(true);
-    setDynamicPriceError(null);
-    (async () => {
-      try {
-        const userDate = selectedDynamicPrice.dateIso;
-        const [cornRaw, nitroRaw] = await Promise.all([
-          fetchJsonWithTimeout(`/api/corn_prices?date=${encodeURIComponent(userDate)}`, controller.signal),
-          fetchJsonWithTimeout(
-            `/api/nitro_prices?date=${encodeURIComponent(userDate)}&source=${encodeURIComponent(dynamicNitrogenSource)}`,
-            controller.signal
-          ),
-        ]);
-        const cornPrice = parseCornPricePayload(cornRaw);
-        const nitroPrice = parseNitroPricePayload(nitroRaw);
-        if (cornPrice === null || nitroPrice === null) {
-          throw new Error('No backend pricing returned for selected date/source.');
-        }
-        setDynamicPriceRows((prev) =>
-          prev.map((row) =>
-            row.dateIso === userDate
-              ? {
-                  ...row,
-                  cornPrice,
-                  nitroBySource: {
-                    ...row.nitroBySource,
-                    [dynamicNitrogenSource]: nitroPrice,
-                  },
-                }
-              : row
-          )
-        );
-      } catch (error) {
-        if ((error as { name?: string }).name === 'AbortError') return;
-        setDynamicPriceError(
-          error instanceof Error
-            ? error.message
-            : 'Failed to fetch dynamic prices for selected date/source.'
-        );
-      } finally {
-        if (!controller.signal.aborted) setDynamicPriceLoading(false);
-      }
-    })();
-
-    return () => controller.abort();
-  }, [showDashboard, showAONR, resultsSection, selectedDynamicPrice?.dateIso, dynamicNitrogenSource]);
-
-  useEffect(() => {
-    if (!showDashboard || !showAONR || resultsSection !== 'dynamic' || selectedCellId === null) {
-      setDynamicSimulations(null);
-      setDynamicCurvePricing(null);
-      setDynamicCurveError(null);
-      setDynamicCurveLoading(false);
-      return;
-    }
-    if (
-      !selectedDynamicPrice ||
-      selectedDynamicNitroPrice === null ||
-      !Number.isFinite(selectedDynamicPrice.cornPrice)
-    ) {
-      // Keep previous curve visible while date/source prices are loading.
-      return;
-    }
-
-    const controller = new AbortController();
-    const params = new URLSearchParams({
-      cell: String(selectedCellId),
-      nitro_price: String(selectedDynamicNitroPrice),
-      grain_price: String(selectedDynamicPrice.cornPrice),
-    });
-
-    setDynamicCurveLoading(true);
-    setDynamicCurveError(null);
-    (async () => {
-      try {
-        const res = await fetch(`/api/simresults?${params.toString()}`, {
-          signal: controller.signal,
-        });
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        const raw = (await res.json()) as unknown;
-        if (!Array.isArray(raw)) throw new Error('Unexpected response format from backend.');
-        const parsed = raw
-          .map((entry) => normalizeSimulation(entry))
-          .filter((entry): entry is SimulationResult => entry !== null);
-        setDynamicSimulations(parsed);
-        setDynamicCurvePricing({
-          cornPrice: selectedDynamicPrice.cornPrice,
-          nitroPrice: selectedDynamicNitroPrice,
-        });
-      } catch (error) {
-        if ((error as { name?: string }).name === 'AbortError') return;
-        setDynamicSimulations(null);
-        setDynamicCurveError(
-          error instanceof Error ? error.message : 'Failed to load dynamic comparison curve.'
-        );
-      } finally {
-        if (!controller.signal.aborted) setDynamicCurveLoading(false);
-      }
-    })();
-
-    return () => controller.abort();
-  }, [
-    showDashboard,
-    showAONR,
-    resultsSection,
-    selectedCellId,
-    selectedDynamicPrice,
-    selectedDynamicNitroPrice,
-  ]);
-
   const dualCurveData = useMemo(() => {
     if (!cellSimulations || cellSimulations.length === 0) return [];
     return cellSimulations
@@ -1903,79 +1585,6 @@ export default function Home() {
     });
   }, [cellSimulations, nPrice, cornPrice]);
   const priceRatio = useMemo(() => (cornPrice > 0 ? nPrice / cornPrice : null), [nPrice, cornPrice]);
-  const dynamicCurveData = useMemo(() => {
-    if (
-      !dynamicSimulations ||
-      dynamicSimulations.length === 0 ||
-      !dynamicCurvePricing
-    )
-      return [];
-    return dynamicSimulations
-      .map((row) => ({
-        x: row.nitroLbAc,
-        yield: row.yieldBsAc ?? 0,
-        profit:
-          row.profitDol ??
-          (row.yieldBsAc !== null
-            ? dynamicCurvePricing.cornPrice * row.yieldBsAc - dynamicCurvePricing.nitroPrice * row.nitroLbAc
-            : null),
-      }))
-      .filter((row): row is { x: number; yield: number; profit: number } => row.profit !== null)
-      .sort((a, b) => a.x - b.x);
-  }, [dynamicSimulations, dynamicCurvePricing]);
-  const dynamicEonrRow = useMemo(() => {
-    if (
-      !dynamicSimulations ||
-      dynamicSimulations.length === 0 ||
-      !dynamicCurvePricing
-    )
-      return null;
-    return dynamicSimulations.reduce((best, row) => {
-      const bestProfit =
-        best.profitDol ??
-        (best.yieldBsAc !== null
-          ? dynamicCurvePricing.cornPrice * best.yieldBsAc - dynamicCurvePricing.nitroPrice * best.nitroLbAc
-          : Number.NEGATIVE_INFINITY);
-      const rowProfit =
-        row.profitDol ??
-        (row.yieldBsAc !== null
-          ? dynamicCurvePricing.cornPrice * row.yieldBsAc - dynamicCurvePricing.nitroPrice * row.nitroLbAc
-          : Number.NEGATIVE_INFINITY);
-      return rowProfit > bestProfit ? row : best;
-    });
-  }, [dynamicSimulations, dynamicCurvePricing]);
-  const activeDynamicProfitBandIntervals = useMemo(() => {
-    if (!dynamicCurveData.length || !dynamicEonrRow) return [];
-    const eonrPt = interpolateDualAtX(dynamicCurveData, dynamicEonrRow.nitroLbAc);
-    if (!eonrPt || !Number.isFinite(eonrPt.profit)) return [];
-    return profitAtLeastIntervals(dynamicCurveData, eonrPt.profit - 1);
-  }, [dynamicCurveData, dynamicEonrRow]);
-  const activeDynamicLabel = useMemo(() => {
-    if (!selectedDynamicPrice) return 'Current scenario';
-    const dateLabel = fullDateLabelFromIsoDate(selectedDynamicPrice.dateIso);
-    const src = dynamicNitrogenSource || 'Nitrogen';
-    const cell = selectedCellId === null ? 'no-cell' : `cell ${selectedCellId}`;
-    return `${dateLabel} · ${src} · ${cell}`;
-  }, [selectedDynamicPrice, dynamicNitrogenSource, selectedCellId]);
-  const dynamicComparisonScenarios = useMemo(
-    () =>
-      savedDynamicScenarios.map((scenario) => ({
-        id: scenario.id,
-        label: scenario.label,
-        points: scenario.points,
-        color: scenario.color,
-        eonrX: scenario.eonrX,
-        profitBandIntervals: scenario.profitBandIntervals,
-      })),
-    [savedDynamicScenarios]
-  );
-  const formatPercentDiff = (value: number, baseline: number): string => {
-    if (!Number.isFinite(value) || !Number.isFinite(baseline) || baseline === 0) return 'vs current';
-    const pct = ((value - baseline) / baseline) * 100;
-    if (Math.abs(pct) < 0.05) return 'same as current';
-    const abs = Math.abs(pct).toFixed(1);
-    return pct > 0 ? `${abs}% higher` : `${abs}% lower`;
-  };
 
   /** Same ±$1/ac profit band as the gray region on the economic curve (profit ≥ peak − $1/ac). */
   const eonrProfitBandSummary = useMemo(() => {
@@ -2026,8 +1635,8 @@ export default function Home() {
     if (savedOptimizeScenarios.length >= 5) return;
     const usedColors = new Set(savedOptimizeScenarios.map((s) => s.color));
     const nextColor =
-      DYNAMIC_SCENARIO_COLORS.find((color) => !usedColors.has(color)) ??
-      DYNAMIC_SCENARIO_COLORS[savedOptimizeScenarios.length % DYNAMIC_SCENARIO_COLORS.length]!;
+      SCENARIO_COLORS.find((color) => !usedColors.has(color)) ??
+      SCENARIO_COLORS[savedOptimizeScenarios.length % SCENARIO_COLORS.length]!;
     const scenario: SavedOptimizeScenario = {
       id: `opt-scenario-${Date.now()}-${Math.round(Math.random() * 1e6)}`,
       color: nextColor,
@@ -2045,38 +1654,6 @@ export default function Home() {
 
   const handleRemoveOptimizeScenario = (id: string) => {
     setSavedOptimizeScenarios((prev) => prev.filter((scenario) => scenario.id !== id));
-  };
-
-  const handleSaveDynamicScenario = () => {
-    if (
-      selectedCellId === null ||
-      !selectedDynamicPrice ||
-      dynamicCurveData.length < 2 ||
-      selectedDynamicNitroPrice === null
-    ) {
-      return;
-    }
-    if (savedDynamicScenarios.length >= 5) return;
-    const usedColors = new Set(savedDynamicScenarios.map((s) => s.color));
-    const nextColor =
-      DYNAMIC_SCENARIO_COLORS.find((color) => !usedColors.has(color)) ??
-      DYNAMIC_SCENARIO_COLORS[savedDynamicScenarios.length % DYNAMIC_SCENARIO_COLORS.length]!;
-    const scenario: SavedDynamicScenario = {
-      id: `scenario-${Date.now()}-${Math.round(Math.random() * 1e6)}`,
-      color: nextColor,
-      label: activeDynamicLabel,
-      cornPrice: selectedDynamicPrice.cornPrice,
-      nitroPrice: selectedDynamicNitroPrice,
-      fertilizerSource: dynamicNitrogenSource || 'Selected source',
-      points: dynamicCurveData.map((p) => ({ ...p })),
-      eonrX: dynamicEonrRow?.nitroLbAc ?? null,
-      profitBandIntervals: activeDynamicProfitBandIntervals.map((seg) => [seg[0], seg[1]] as [number, number]),
-    };
-    setSavedDynamicScenarios((prev) => [...prev, scenario]);
-  };
-
-  const handleRemoveDynamicScenario = (id: string) => {
-    setSavedDynamicScenarios((prev) => prev.filter((scenario) => scenario.id !== id));
   };
 
   const handleContinue = () => {
@@ -2376,7 +1953,7 @@ export default function Home() {
                         <ProviderTiles provider="OpenStreetMap.Mapnik" />
                         <MapInvalidateSize trigger={`${showMapPanel}-${resultsSection}`} />
                         <MapTapToContinue onTap={handleMapInteraction} />
-                        {(!showAONR || resultsSection === 'optimize' || resultsSection === 'dynamic') && (
+                        {(!showAONR || resultsSection === 'optimize') && (
                           <CellsLayer selectedCellId={selectedCellId} onSelectCell={setSelectedCellId} />
                         )}
                         {showAONR && resultsSection === 'trials' && (
@@ -2432,7 +2009,7 @@ export default function Home() {
                 )}
 
                 <div className="space-y-12 pb-32 lg:col-span-7">
-                  {showAONR && resultsSection !== 'dynamic' && (
+                  {showAONR && (
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                       <div className="grid gap-6 md:grid-cols-2">
                         <PriceInput
@@ -2488,23 +2065,6 @@ export default function Home() {
                     >
                       On-Farm Trials
                     </button>
-                    <button
-                      type="button"
-                      disabled={!showAONR}
-                      onClick={() => {
-                        setResultsSection('dynamic');
-                        setMobileTrialsView('map');
-                      }}
-                      className={`inline-flex items-center rounded-2xl px-4 py-3 text-[11px] font-bold uppercase tracking-wide transition md:text-xs ${
-                        !showAONR
-                          ? 'cursor-not-allowed border border-slate-200 bg-slate-200 text-slate-500'
-                          : resultsSection === 'dynamic'
-                            ? 'bg-[#CEB888] text-black shadow-sm'
-                            : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
-                      }`}
-                    >
-                      Dynamic N-Rate Comparison
-                    </button>
                   </div>
 
                   {!showAONR ? (
@@ -2531,6 +2091,33 @@ export default function Home() {
                               Backend error: {cellDataError}
                             </p>
                           )}
+                          <div
+                            className="mb-4 rounded-2xl border border-black/15 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_1px_3px_rgba(0,0,0,0.12)] sm:px-5"
+                            style={{ background: PURDUE_HEADER_BEIGE_PANEL }}
+                          >
+                            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-950">
+                                  Planting date
+                                </p>
+                                <p className="mt-1 text-sm font-medium text-stone-900">
+                                  Select a planting window
+                                </p>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                              {PLANTING_DATE_OPTIONS.map((option) => (
+                                <button
+                                  key={option}
+                                  type="button"
+                                  disabled
+                                  className="min-h-12 cursor-not-allowed rounded-xl border border-black/70 bg-stone-950 px-3 py-2 text-center text-xs font-bold uppercase tracking-[0.08em] text-[#CEB888] shadow-sm transition disabled:opacity-100 sm:text-[11px]"
+                                >
+                                  {option}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                           {!cellDataError && (
                             <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                               <div className="flex items-center justify-between gap-3">
@@ -2647,7 +2234,7 @@ export default function Home() {
                             </div>
                           )}
                         </div>
-                      ) : resultsSection === 'trials' ? (
+                      ) : (
                         <section
                           className="overflow-hidden rounded-3xl border border-dashed border-slate-300 bg-slate-50/80 p-8 shadow-inner sm:p-10"
                           aria-labelledby="on-farm-trials-heading"
@@ -2726,310 +2313,6 @@ export default function Home() {
                               )}
                             </div>
                           ) : null}
-                        </section>
-                      ) : (
-                        <section className="overflow-hidden rounded-3xl border border-dashed border-slate-300 bg-slate-50/80 p-8 shadow-inner sm:p-10">
-                          <div className="space-y-5">
-                            
-                            {dynamicPriceError &&
-                              dynamicPriceError !== 'No backend pricing returned for selected date/source.' && (
-                              <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
-                                {dynamicPriceError}
-                              </p>
-                            )}
-
-                            {dynamicPriceRows.length > 0 && selectedDynamicPrice && (
-                              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 sm:px-5">
-                                <div className="mb-3 flex items-center justify-between gap-3">
-                                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                                    Saved scenarios ({savedDynamicScenarios.length}/5)
-                                  </p>
-                                  <button
-                                    type="button"
-                                    onClick={handleSaveDynamicScenario}
-                                    disabled={
-                                      selectedCellId === null ||
-                                      dynamicCurveData.length < 2 ||
-                                      savedDynamicScenarios.length >= 5
-                                    }
-                                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] ${
-                                      selectedCellId === null ||
-                                      dynamicCurveData.length < 2 ||
-                                      savedDynamicScenarios.length >= 5
-                                        ? 'cursor-not-allowed bg-slate-200 text-slate-500'
-                                        : 'bg-emerald-600 text-white hover:bg-emerald-500'
-                                    }`}
-                                  >
-                                    Save scenario
-                                  </button>
-                                </div>
-                                {savedDynamicScenarios.length > 0 ? (
-                                  <div className="mb-4 flex flex-wrap gap-2">
-                                    {savedDynamicScenarios.map((scenario) => (
-                                      <div
-                                        key={scenario.id}
-                                        className="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
-                                      >
-                                        <span
-                                          className="h-2.5 w-2.5 shrink-0 rounded-full"
-                                          style={{ backgroundColor: scenario.color }}
-                                          aria-hidden
-                                        />
-                                        <span className="truncate">{scenario.label}</span>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleRemoveDynamicScenario(scenario.id)}
-                                          className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-700"
-                                          aria-label={`Remove ${scenario.label}`}
-                                        >
-                                          X
-                                        </button>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <p className="mb-4 text-xs text-slate-500">
-                                    Save up to five scenarios to compare fixed curves.
-                                  </p>
-                                )}
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                  <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                                      Select date
-                                    </p>
-                                    <div className="mt-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 shadow-sm">
-                                      {fullDateLabelFromIsoDate(selectedDynamicPrice.dateIso)}
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <label
-                                      htmlFor="dynamic-fertilizer-source"
-                                      className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500"
-                                    >
-                                      Fertilizer type
-                                    </label>
-                                    <select
-                                      id="dynamic-fertilizer-source"
-                                      value={dynamicNitrogenSource}
-                                      onChange={(e) => setDynamicNitrogenSource(e.target.value)}
-                                      className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                                    >
-                                      {dynamicNitrogenSources.map((source) => (
-                                        <option key={source} value={source}>
-                                          {source}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </div>
-                                </div>
-                                <div
-                                  className="relative mt-2"
-                                  onMouseMove={(e) => {
-                                    const rect = e.currentTarget.getBoundingClientRect();
-                                    const ratio = Math.max(
-                                      0,
-                                      Math.min(1, (e.clientX - rect.left) / Math.max(rect.width, 1))
-                                    );
-                                    const pct = ratio * 100;
-                                    if (pct >= iranConflictStartPct) {
-                                      setShowConflictTooltip(true);
-                                      setConflictTooltipLeftPct(pct);
-                                    } else {
-                                      setShowConflictTooltip(false);
-                                    }
-                                  }}
-                                  onMouseLeave={() => setShowConflictTooltip(false)}
-                                >
-                                  <div className="pointer-events-none absolute inset-x-0 top-0 h-2 rounded-lg bg-slate-200" />
-                                  <div
-                                    className="pointer-events-none absolute top-0 h-2 rounded-lg bg-gradient-to-r from-rose-200/90 to-red-300/90"
-                                    style={{
-                                      left: `${iranConflictStartPct}%`,
-                                      width: `${Math.max(0, 100 - iranConflictStartPct)}%`,
-                                    }}
-                                    aria-hidden
-                                  />
-                                  <div
-                                    className="pointer-events-none absolute left-0 top-0 h-2 rounded-lg bg-[#2f7d45]"
-                                    style={{ width: `${Math.min(dynamicSliderProgressPct, iranConflictStartPct)}%` }}
-                                    aria-hidden
-                                  />
-                                  <div
-                                    className="pointer-events-none absolute top-0 h-2 rounded-lg bg-red-600"
-                                    style={{
-                                      left: `${iranConflictStartPct}%`,
-                                      width: `${Math.max(0, dynamicSliderProgressPct - iranConflictStartPct)}%`,
-                                    }}
-                                    aria-hidden
-                                  />
-                                  <input
-                                    type="range"
-                                    min={0}
-                                    max={Math.max(0, dynamicPriceRows.length - 1)}
-                                    step={1}
-                                    value={Math.min(dynamicDateIndex, dynamicPriceRows.length - 1)}
-                                    onChange={(e) => setDynamicDateIndex(Number(e.target.value))}
-                                    className="dynamic-date-slider relative z-[1] h-5 w-full cursor-pointer appearance-none rounded-lg"
-                                    style={{
-                                      background: 'transparent',
-                                    }}
-                                  />
-                                  {showConflictTooltip && (
-                                    <span
-                                      className="pointer-events-none absolute -top-8 -translate-x-1/2 whitespace-nowrap rounded-md bg-red-600 px-2 py-1 text-[10px] font-bold text-white shadow-md"
-                                      style={{ left: `${conflictTooltipLeftPct}%` }}
-                                    >
-                                      Iran Conflict
-                                    </span>
-                                  )}
-                                  <div
-                                    className="pointer-events-none absolute -bottom-5 w-px border-l border-dashed border-red-400/90"
-                                    style={{
-                                      left: `${iranConflictStartPct}%`,
-                                      height: '1.2rem',
-                                    }}
-                                    aria-hidden
-                                  />
-                                </div>
-                                <div className="relative mt-3 h-11 border-t border-slate-200">
-                                  {dynamicSliderTicks.map((tick) => (
-                                    <div
-                                      key={tick.idx}
-                                      className="absolute top-0 -translate-x-1/2 text-[10px]"
-                                      style={{ left: `${tick.leftPct}%` }}
-                                    >
-                                      <div
-                                        className={`mx-auto mt-[-4px] h-2 w-2 rounded-full ${
-                                          tick.idx === Math.min(dynamicDateIndex, dynamicPriceRows.length - 1)
-                                            ? 'bg-emerald-700'
-                                            : 'bg-emerald-500/80'
-                                        }`}
-                                        aria-hidden
-                                      />
-                                      <span
-                                        className={`mt-1 block whitespace-nowrap ${
-                                          tick.idx === Math.min(dynamicDateIndex, dynamicPriceRows.length - 1)
-                                            ? 'font-bold text-emerald-800'
-                                            : 'text-slate-500'
-                                        }`}
-                                      >
-                                        {tick.label}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {!selectedCellId && (
-                              <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-                                Select a map cell to run a dynamic date-based comparison.
-                              </p>
-                            )}
-
-                            {selectedCellId && dynamicCurveError && (
-                              <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800">
-                                Backend error: {dynamicCurveError}
-                              </p>
-                            )}
-
-                            {selectedCellId && selectedDynamicPrice && !dynamicCurveError && (
-                              <div className="space-y-4">
-                                {dynamicCurveData.length > 1 ? (
-                                  <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl sm:p-6 lg:p-10">
-                                    <DualAxisNitrogenChart
-                                      points={dynamicCurveData}
-                                      eonrX={dynamicEonrRow?.nitroLbAc ?? null}
-                                      comparisonScenarios={dynamicComparisonScenarios}
-                                      isMobile={isMobile}
-                                    />
-                                    {dynamicCurveLoading && (
-                                      <SimulationLoadingOverlay
-                                        showBackendWake={false}
-                                        statusMessage="Refreshing dynamic comparison curve..."
-                                      />
-                                    )}
-                                  </div>
-                                ) : (
-                                  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-600 shadow-sm">
-                                    {dynamicCurveLoading
-                                      ? 'Loading dynamic nitrogen response curve...'
-                                      : 'Dynamic response curve is not available for the selected inputs yet.'}
-                                  </div>
-                                )}
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                  <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/60 px-4 py-4 shadow-sm">
-                                    <NitrogenDollarIcon className="h-12 w-12 shrink-0 text-emerald-700" />
-                                    <div>
-                                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-900">
-                                        Nitrogen Price
-                                      </p>
-                                      <p className="mt-1 text-2xl font-black text-emerald-800">
-                                        {selectedDynamicNitroPrice === null
-                                          ? '—'
-                                          : `$${selectedDynamicNitroPrice.toFixed(2)}`}
-                                      </p>
-                                      <p className="text-sm text-emerald-700">
-                                        {dynamicNitrogenSource || 'Selected source'} per lb N
-                                      </p>
-                                      {savedDynamicScenarios.length > 0 && (
-                                        <div className="mt-2 space-y-1">
-                                          {savedDynamicScenarios.map((scenario) => (
-                                            <div key={`n-${scenario.id}`} className="flex items-center gap-2 text-xs text-emerald-900">
-                                              <span
-                                                className="h-2.5 w-2.5 shrink-0 rounded-full"
-                                                style={{ backgroundColor: scenario.color }}
-                                                aria-hidden
-                                              />
-                                              <span>
-                                                ${scenario.nitroPrice.toFixed(2)}/lb ({formatPercentDiff(
-                                                  scenario.nitroPrice,
-                                                  selectedDynamicNitroPrice ?? scenario.nitroPrice
-                                                )})
-                                              </span>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50/60 px-4 py-4 shadow-sm">
-                                    <CornDollarIcon className="h-12 w-12 shrink-0 text-amber-600" />
-                                    <div>
-                                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-900">
-                                        Corn Price
-                                      </p>
-                                      <p className="mt-1 text-2xl font-black text-amber-800">
-                                        {Number.isFinite(selectedDynamicPrice.cornPrice)
-                                          ? `$${selectedDynamicPrice.cornPrice.toFixed(2)}`
-                                          : '—'}
-                                      </p>
-                                      <p className="text-sm text-amber-700">per bushel</p>
-                                      {savedDynamicScenarios.length > 0 && (
-                                        <div className="mt-2 space-y-1">
-                                          {savedDynamicScenarios.map((scenario) => (
-                                            <div key={`c-${scenario.id}`} className="flex items-center gap-2 text-xs text-amber-900">
-                                              <span
-                                                className="h-2.5 w-2.5 shrink-0 rounded-full"
-                                                style={{ backgroundColor: scenario.color }}
-                                                aria-hidden
-                                              />
-                                              <span>
-                                                ${scenario.cornPrice.toFixed(2)}/bu ({formatPercentDiff(
-                                                  scenario.cornPrice,
-                                                  selectedDynamicPrice.cornPrice
-                                                )})
-                                              </span>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
                         </section>
                       )}
                     </>
@@ -3135,35 +2418,6 @@ function CompassLocationIcon({ className }: { className?: string }) {
       />
       <text x="32" y="15" textAnchor="middle" fill="currentColor" fontSize="11" fontWeight="700">
         N
-      </text>
-    </svg>
-  );
-}
-
-function NitrogenDollarIcon({ className }: { className?: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 64 64" className={className} fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="6" y="6" width="40" height="40" rx="8" />
-      <text x="26" y="31" textAnchor="middle" fill="currentColor" fontSize="20" fontWeight="800">
-        N
-      </text>
-      <circle cx="48" cy="46" r="12" fill="currentColor" stroke="none" opacity="0.9" />
-      <text x="48" y="51" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="800">
-        $
-      </text>
-    </svg>
-  );
-}
-
-function CornDollarIcon({ className }: { className?: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 64 64" className={className} fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M28 10c-6 4-10 12-10 21s4 17 10 21c6-4 10-12 10-21s-4-17-10-21Z" />
-      <path d="M28 14v34M20 20h16M20 27h16M20 34h16M20 41h16" />
-      <path d="M18 20c-5 4-8 9-8 16s3 12 8 16M38 20c5 4 8 9 8 16s-3 12-8 16" />
-      <circle cx="50" cy="46" r="12" fill="currentColor" stroke="none" opacity="0.9" />
-      <text x="50" y="51" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="800">
-        $
       </text>
     </svg>
   );
@@ -3361,13 +2615,10 @@ function DualAxisNitrogenChart({
 
   if (animatedPoints.length < 2) return null;
 
-  const allSeriesPoints = useMemo(
-    () => [
-      ...animatedPoints,
-      ...comparisonScenarios.flatMap((scenario) => scenario.points),
-    ],
-    [animatedPoints, comparisonScenarios]
-  );
+  const allSeriesPoints = [
+    ...animatedPoints,
+    ...comparisonScenarios.flatMap((scenario) => scenario.points),
+  ];
 
   const xMax = Math.max(...allSeriesPoints.map((p) => p.x));
   /** Nitrogen axis always starts at 0 lb/ac so the scale isn’t cropped to the first simulation point. */
@@ -3389,22 +2640,15 @@ function DualAxisNitrogenChart({
   const pathProfit = animatedPoints
     .map((p, i) => `${i === 0 ? 'M' : 'L'} ${sx(p.x).toFixed(2)} ${syProfit(p.profit).toFixed(2)}`)
     .join(' ');
-  const comparisonSeries = useMemo(
-    () =>
-      comparisonScenarios
-        .filter((scenario) => scenario.points.length >= 2)
-        .map((scenario) => ({
-          ...scenario,
-          path: scenario.points
-            .map(
-              (p, i) => `${i === 0 ? 'M' : 'L'} ${sx(p.x).toFixed(2)} ${syProfit(p.profit).toFixed(2)}`
-            )
-            .join(' '),
-          eonrPt:
-            scenario.eonrX !== null ? interpolateDualAtX(scenario.points, scenario.eonrX) : null,
-        })),
-    [comparisonScenarios, sx, syProfit]
-  );
+  const comparisonSeries = comparisonScenarios
+    .filter((scenario) => scenario.points.length >= 2)
+    .map((scenario) => ({
+      ...scenario,
+      path: scenario.points
+        .map((p, i) => `${i === 0 ? 'M' : 'L'} ${sx(p.x).toFixed(2)} ${syProfit(p.profit).toFixed(2)}`)
+        .join(' '),
+      eonrPt: scenario.eonrX !== null ? interpolateDualAtX(scenario.points, scenario.eonrX) : null,
+    }));
 
   const eonrPt = eonrX !== null ? interpolateDualAtX(points, eonrX) : null;
   const profitBandDelta = 1;
@@ -3414,7 +2658,7 @@ function DualAxisNitrogenChart({
       : [];
 
   const hoveredPoint = hoverNitrogenRate !== null ? interpolateDualAtX(points, hoverNitrogenRate) : null;
-  const visibleCurveEonrValues = useMemo(() => {
+  const visibleCurveEonrValues = (() => {
     const out: Array<{ key: string; label: string; color: string; eonrX: number }> = [];
     if (!hideCurve && eonrX !== null) {
       out.push({ key: 'current', label: 'Current', color: '#15803d', eonrX });
@@ -3429,7 +2673,7 @@ function DualAxisNitrogenChart({
       });
     }
     return out;
-  }, [hideCurve, eonrX, comparisonScenarios]);
+  })();
   const hoverTooltipHeight = 34 + visibleCurveEonrValues.length * 14;
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
