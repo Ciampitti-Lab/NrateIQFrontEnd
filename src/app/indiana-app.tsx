@@ -33,12 +33,14 @@ const LOADING_STATUS_MESSAGES = [
   '🚜 Finalizing your nitrogen response curve…',
 ] as const;
 
-const PLANTING_DATE_OPTIONS = [
-  'Before April 30',
-  'May 1–15',
-  'May 16–31',
-  'June 1–15',
+const PLANTING_DATE_WINDOWS = [
+  { label: 'Before April 30', value: 1, enabled: true },
+  { label: 'May 1–15', value: 2, enabled: true },
+  { label: 'May 16–31', value: 3, enabled: false },
+  { label: 'June 1–15', value: 4, enabled: false },
 ] as const;
+
+const DEFAULT_PLANTING_DATE = 1;
 
 function ProviderTiles({ provider }: { provider: string }) {
   const map = useMap();
@@ -1313,6 +1315,7 @@ export default function Home() {
   const [eonrHistogramError, setEonrHistogramError] = useState<string | null>(null);
   const [selectedRegionMapColor, setSelectedRegionMapColor] = useState<string | null>(null);
   const [savedOptimizeScenarios, setSavedOptimizeScenarios] = useState<SavedOptimizeScenario[]>([]);
+  const [plantingDate, setPlantingDate] = useState(DEFAULT_PLANTING_DATE);
 
   const trialsRegionApiParam = useMemo(() => {
     const code = (selectedCountyRegion ?? selectedCountyName)?.trim();
@@ -1382,6 +1385,7 @@ export default function Home() {
       setEonrHistogramLoading(false);
       setSelectedRegionMapColor(null);
       setSavedOptimizeScenarios([]);
+      setPlantingDate(DEFAULT_PLANTING_DATE);
       if (continueTimerRef.current !== null) {
         window.clearTimeout(continueTimerRef.current);
         continueTimerRef.current = null;
@@ -1430,6 +1434,7 @@ export default function Home() {
     setEonrHistogramLoading(false);
     setSelectedRegionMapColor(null);
     setSavedOptimizeScenarios([]);
+    setPlantingDate(DEFAULT_PLANTING_DATE);
 
     if (continueTimerRef.current !== null) {
       window.clearTimeout(continueTimerRef.current);
@@ -1524,6 +1529,7 @@ export default function Home() {
     const controller = new AbortController();
     const params = new URLSearchParams({
       cell: String(selectedCellId),
+      planting_date: String(plantingDate),
       nitro_price: String(nPrice),
       grain_price: String(cornPrice),
     });
@@ -1557,7 +1563,7 @@ export default function Home() {
     })();
 
     return () => controller.abort();
-  }, [selectedCellId, nPrice, cornPrice]);
+  }, [selectedCellId, plantingDate, nPrice, cornPrice]);
 
   const dualCurveData = useMemo(() => {
     if (!cellSimulations || cellSimulations.length === 0) return [];
@@ -1671,6 +1677,7 @@ export default function Home() {
 
       if (continueTimerRef.current !== null) window.clearTimeout(continueTimerRef.current);
       continueTimerRef.current = window.setTimeout(() => {
+        if (!showAONR) setPlantingDate(DEFAULT_PLANTING_DATE);
         setShowAONR(true);
         setMobileMapOpen(false);
         continueTimerRef.current = null;
@@ -1678,6 +1685,7 @@ export default function Home() {
       return;
     }
 
+    if (!showAONR) setPlantingDate(DEFAULT_PLANTING_DATE);
     setShowAONR(true);
   };
 
@@ -2106,16 +2114,34 @@ export default function Home() {
                               </div>
                             </div>
                             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                              {PLANTING_DATE_OPTIONS.map((option) => (
-                                <button
-                                  key={option}
-                                  type="button"
-                                  disabled
-                                  className="min-h-12 cursor-not-allowed rounded-xl border border-black/70 bg-stone-950 px-3 py-2 text-center text-xs font-bold uppercase tracking-[0.08em] text-[#CEB888] shadow-sm transition disabled:opacity-100 sm:text-[11px]"
-                                >
-                                  {option}
-                                </button>
-                              ))}
+                              {PLANTING_DATE_WINDOWS.map((window) => {
+                                const isSelected = plantingDate === window.value;
+                                return (
+                                  <button
+                                    key={window.label}
+                                    type="button"
+                                    disabled={!window.enabled}
+                                    onClick={() => {
+                                      if (window.enabled) setPlantingDate(window.value);
+                                    }}
+                                    aria-pressed={window.enabled ? isSelected : undefined}
+                                    style={
+                                      window.enabled && !isSelected
+                                        ? { background: PURDUE_HEADER_BEIGE_PANEL }
+                                        : undefined
+                                    }
+                                    className={`min-h-12 rounded-xl border px-3 py-2 text-center text-xs font-bold uppercase tracking-[0.08em] shadow-sm transition sm:text-[11px] ${
+                                      !window.enabled
+                                        ? 'cursor-not-allowed border-stone-400/60 bg-stone-400/25 text-stone-600 opacity-70'
+                                        : isSelected
+                                          ? 'cursor-pointer border-stone-950 bg-stone-950 text-[#CEB888] shadow-[0_0_0_2px_rgba(0,0,0,0.35),0_0_0_4px_#CEB888,0_4px_12px_rgba(0,0,0,0.25)] ring-2 ring-[#CEB888]/80'
+                                          : 'cursor-pointer border-black text-black hover:opacity-90'
+                                    }`}
+                                  >
+                                    {window.label}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </div>
                           {!cellDataError && (
