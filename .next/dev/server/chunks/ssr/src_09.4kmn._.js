@@ -281,6 +281,9 @@ const PLANTING_DATE_WINDOWS = [
     }
 ];
 const DEFAULT_PLANTING_DATE = 1;
+function plantingDateLabelFromValue(value) {
+    return PLANTING_DATE_WINDOWS.find((w)=>w.value === value)?.label ?? `Planting ${value}`;
+}
 function ProviderTiles({ provider }) {
     const map = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$leaflet$2f$lib$2f$hooks$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMap"])();
     const layerRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -311,35 +314,37 @@ function ProviderTiles({ provider }) {
 }
 function SimulationLoadingOverlay({ showBackendWake, statusMessage }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "pointer-events-none absolute inset-0 flex items-center justify-center",
+        className: "pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-white",
+        "aria-busy": "true",
+        "aria-live": "polite",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex max-w-sm flex-col items-center gap-4 rounded-2xl bg-white/70 px-6 py-6 text-center backdrop-blur-sm",
+            className: "flex max-w-sm flex-col items-center gap-4 px-6 py-6 text-center",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "h-8 w-8 shrink-0 animate-spin rounded-full border-4 border-[#CEB888]/30 border-t-[#CEB888]",
                     "aria-label": "Loading"
                 }, void 0, false, {
                     fileName: "[project]/src/app/indiana-app.tsx",
-                    lineNumber: 96,
+                    lineNumber: 104,
                     columnNumber: 9
                 }, this),
-                showBackendWake && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                     className: "text-sm font-medium leading-snug text-slate-800",
-                    children: statusMessage
+                    children: showBackendWake ? statusMessage : 'Loading simulation results…'
                 }, void 0, false, {
                     fileName: "[project]/src/app/indiana-app.tsx",
-                    lineNumber: 101,
-                    columnNumber: 11
+                    lineNumber: 108,
+                    columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/indiana-app.tsx",
-            lineNumber: 95,
+            lineNumber: 103,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 94,
+        lineNumber: 98,
         columnNumber: 5
     }, this);
 }
@@ -463,7 +468,7 @@ function CellsLayer({ selectedCellId, onSelectCell }) {
         }
     }, void 0, false, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 204,
+        lineNumber: 212,
         columnNumber: 5
     }, this);
 }
@@ -584,7 +589,7 @@ function CountiesLayer({ selectedCountyName, onSelectCounty, onLoadError }) {
         }
     }, selectedCountyName ?? 'none', false, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 372,
+        lineNumber: 380,
         columnNumber: 5
     }, this);
 }
@@ -1028,7 +1033,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                             children: "EONR distribution"
                         }, void 0, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 808,
+                            lineNumber: 816,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1044,24 +1049,24 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                     children: regionLabel
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 813,
+                                    lineNumber: 821,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 811,
+                            lineNumber: 819,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/indiana-app.tsx",
-                    lineNumber: 807,
+                    lineNumber: 815,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 806,
+                lineNumber: 814,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -1085,7 +1090,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                         stopOpacity: "0.95"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 827,
+                                        lineNumber: 835,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
@@ -1094,7 +1099,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                         stopOpacity: "1"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 828,
+                                        lineNumber: 836,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
@@ -1103,13 +1108,13 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                         stopOpacity: "1"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 829,
+                                        lineNumber: 837,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 826,
+                                lineNumber: 834,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("filter", {
@@ -1126,18 +1131,18 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                     floodOpacity: "0.12"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 832,
+                                    lineNumber: 840,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 831,
+                                lineNumber: 839,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 825,
+                        lineNumber: 833,
                         columnNumber: 9
                     }, this),
                     yTicks.filter((tick)=>tick.t > 0).map((tick)=>{
@@ -1151,7 +1156,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                             strokeWidth: 1
                         }, tick.t, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 840,
+                            lineNumber: 848,
                             columnNumber: 13
                         }, this);
                     }),
@@ -1164,7 +1169,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                         strokeWidth: 1.25
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 852,
+                        lineNumber: 860,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -1176,7 +1181,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                         strokeWidth: 1.25
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 860,
+                        lineNumber: 868,
                         columnNumber: 9
                     }, this),
                     yTicks.map((tick)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1191,7 +1196,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                             children: tick.value
                         }, `yt-${tick.t}`, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 862,
+                            lineNumber: 870,
                             columnNumber: 11
                         }, this)),
                     bins.map((b, i)=>{
@@ -1243,12 +1248,12 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 onMouseLeave: ()=>setHoveredBar(null)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 888,
+                                lineNumber: 896,
                                 columnNumber: 15
                             }, this)
                         }, `${b.lo}-${b.hi}-${i}`, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 882,
+                            lineNumber: 890,
                             columnNumber: 13
                         }, this);
                     }),
@@ -1268,7 +1273,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 914,
+                                lineNumber: 922,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1282,7 +1287,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 children: `${hoveredBar.count} trial${hoveredBar.count === 1 ? '' : 's'}`
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 925,
+                                lineNumber: 933,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1296,13 +1301,13 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 children: `${Math.round(hoveredBar.lo)}-${Math.round(hoveredBar.hi)} lb/ac`
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 933,
+                                lineNumber: 941,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 913,
+                        lineNumber: 921,
                         columnNumber: 11
                     }, this),
                     xticks.map((xv)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1317,7 +1322,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                             children: Number.isInteger(xv) ? xv : xv.toFixed(0)
                         }, xv, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 945,
+                            lineNumber: 953,
                             columnNumber: 11
                         }, this)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1332,7 +1337,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                         children: "Nitrogen rate (lb/ac)"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 957,
+                        lineNumber: 965,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1348,13 +1353,13 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                         children: "Trials"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 967,
+                        lineNumber: 975,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 819,
+                lineNumber: 827,
                 columnNumber: 7
             }, this),
             stats && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1365,7 +1370,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                         children: "EONR summary (lb/ac)"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 980,
+                        lineNumber: 988,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dl", {
@@ -1379,62 +1384,12 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                         children: "Median"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 985,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
-                                        className: "font-semibold tabular-nums text-slate-900",
-                                        children: fmt(stats.median)
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 986,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 984,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex flex-col gap-0.5",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
-                                        className: "text-[11px] font-medium text-slate-500",
-                                        children: "Std dev"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 989,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
-                                        className: "font-semibold tabular-nums text-slate-900",
-                                        children: fmt(stats.stdDev)
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 990,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 988,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex flex-col gap-0.5",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
-                                        className: "text-[11px] font-medium text-slate-500",
-                                        children: "Minimum"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 993,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
                                         className: "font-semibold tabular-nums text-slate-900",
-                                        children: fmt(stats.min)
+                                        children: fmt(stats.median)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 994,
@@ -1451,7 +1406,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
                                         className: "text-[11px] font-medium text-slate-500",
-                                        children: "25th percentile"
+                                        children: "Std dev"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 997,
@@ -1459,7 +1414,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
                                         className: "font-semibold tabular-nums text-slate-900",
-                                        children: fmt(stats.p25)
+                                        children: fmt(stats.stdDev)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 998,
@@ -1476,7 +1431,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
                                         className: "text-[11px] font-medium text-slate-500",
-                                        children: "75th percentile"
+                                        children: "Minimum"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 1001,
@@ -1484,7 +1439,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
                                         className: "font-semibold tabular-nums text-slate-900",
-                                        children: fmt(stats.p75)
+                                        children: fmt(stats.min)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 1002,
@@ -1501,7 +1456,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
                                         className: "text-[11px] font-medium text-slate-500",
-                                        children: "Maximum"
+                                        children: "25th percentile"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 1005,
@@ -1509,7 +1464,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
                                         className: "font-semibold tabular-nums text-slate-900",
-                                        children: fmt(stats.max)
+                                        children: fmt(stats.p25)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 1006,
@@ -1526,7 +1481,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
                                         className: "text-[11px] font-medium text-slate-500",
-                                        children: "Count of trials in the region"
+                                        children: "75th percentile"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 1009,
@@ -1534,7 +1489,7 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
                                         className: "font-semibold tabular-nums text-slate-900",
-                                        children: stats.count
+                                        children: fmt(stats.p75)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
                                         lineNumber: 1010,
@@ -1545,23 +1500,73 @@ function EonrHistogramChart({ bins, regionLabel, isMobile, accentHex }) {
                                 fileName: "[project]/src/app/indiana-app.tsx",
                                 lineNumber: 1008,
                                 columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex flex-col gap-0.5",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
+                                        className: "text-[11px] font-medium text-slate-500",
+                                        children: "Maximum"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/indiana-app.tsx",
+                                        lineNumber: 1013,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
+                                        className: "font-semibold tabular-nums text-slate-900",
+                                        children: fmt(stats.max)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/indiana-app.tsx",
+                                        lineNumber: 1014,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/indiana-app.tsx",
+                                lineNumber: 1012,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex flex-col gap-0.5",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
+                                        className: "text-[11px] font-medium text-slate-500",
+                                        children: "Count of trials in the region"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/indiana-app.tsx",
+                                        lineNumber: 1017,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
+                                        className: "font-semibold tabular-nums text-slate-900",
+                                        children: stats.count
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/indiana-app.tsx",
+                                        lineNumber: 1018,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/indiana-app.tsx",
+                                lineNumber: 1016,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 983,
+                        lineNumber: 991,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 979,
+                lineNumber: 987,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 799,
+        lineNumber: 807,
         columnNumber: 5
     }, this);
 }
@@ -1586,7 +1591,7 @@ function EonrHistogramEmptyChart({ isMobile }) {
                         children: "EONR distribution"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1033,
+                        lineNumber: 1041,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1594,13 +1599,13 @@ function EonrHistogramEmptyChart({ isMobile }) {
                         children: "On-farm trials — select a region"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1036,
+                        lineNumber: 1044,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 1032,
+                lineNumber: 1040,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -1625,7 +1630,7 @@ function EonrHistogramEmptyChart({ isMobile }) {
                             strokeWidth: 1
                         }, t, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 1047,
+                            lineNumber: 1055,
                             columnNumber: 13
                         }, this);
                     }),
@@ -1638,7 +1643,7 @@ function EonrHistogramEmptyChart({ isMobile }) {
                         strokeWidth: 1.25
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1050,
+                        lineNumber: 1058,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -1650,7 +1655,7 @@ function EonrHistogramEmptyChart({ isMobile }) {
                         strokeWidth: 1.25
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1051,
+                        lineNumber: 1059,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1665,7 +1670,7 @@ function EonrHistogramEmptyChart({ isMobile }) {
                         children: "Nitrogen rate (lb/ac)"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1052,
+                        lineNumber: 1060,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1681,13 +1686,13 @@ function EonrHistogramEmptyChart({ isMobile }) {
                         children: "Trials"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1061,
+                        lineNumber: 1069,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 1038,
+                lineNumber: 1046,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1695,13 +1700,13 @@ function EonrHistogramEmptyChart({ isMobile }) {
                 children: "Select a region on the map to load trial data."
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 1072,
+                lineNumber: 1080,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 1031,
+        lineNumber: 1039,
         columnNumber: 5
     }, this);
 }
@@ -1759,13 +1764,13 @@ const GAUGE_READOUT = '#0c0a09';
                         children: "(Economic Optimum Nitrogen Rate)"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1144,
+                        lineNumber: 1152,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 1142,
+                lineNumber: 1150,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -1789,7 +1794,7 @@ const GAUGE_READOUT = '#0c0a09';
                                         result: "b"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1160,
+                                        lineNumber: 1168,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("feMerge", {
@@ -1798,26 +1803,26 @@ const GAUGE_READOUT = '#0c0a09';
                                                 in: "b"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1162,
+                                                lineNumber: 1170,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("feMergeNode", {
                                                 in: "SourceGraphic"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1163,
+                                                lineNumber: 1171,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1161,
+                                        lineNumber: 1169,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1159,
+                                lineNumber: 1167,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("filter", {
@@ -1833,7 +1838,7 @@ const GAUGE_READOUT = '#0c0a09';
                                         result: "blur"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1167,
+                                        lineNumber: 1175,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("feMerge", {
@@ -1842,32 +1847,32 @@ const GAUGE_READOUT = '#0c0a09';
                                                 in: "blur"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1169,
+                                                lineNumber: 1177,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("feMergeNode", {
                                                 in: "SourceGraphic"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1170,
+                                                lineNumber: 1178,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1168,
+                                        lineNumber: 1176,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1166,
+                                lineNumber: 1174,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1158,
+                        lineNumber: 1166,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1879,7 +1884,7 @@ const GAUGE_READOUT = '#0c0a09';
                         strokeLinecap: "round"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1176,
+                        lineNumber: 1184,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1892,7 +1897,7 @@ const GAUGE_READOUT = '#0c0a09';
                         filter: `url(#${filterGlow})`
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1185,
+                        lineNumber: 1193,
                         columnNumber: 11
                     }, this),
                     tickAngles.map((seg, i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -1905,7 +1910,7 @@ const GAUGE_READOUT = '#0c0a09';
                             strokeLinecap: "round"
                         }, i, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 1197,
+                            lineNumber: 1205,
                             columnNumber: 13
                         }, this)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1923,19 +1928,19 @@ const GAUGE_READOUT = '#0c0a09';
                         children: mainText
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1210,
+                        lineNumber: 1218,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 1148,
+                lineNumber: 1156,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 1141,
+        lineNumber: 1149,
         columnNumber: 5
     }, this);
 }
@@ -2351,7 +2356,7 @@ function Home() {
         const scenario = {
             id: `opt-scenario-${Date.now()}-${Math.round(Math.random() * 1e6)}`,
             color: nextColor,
-            label: `Cell ${selectedCellId} · N $${nPrice.toFixed(2)} · Corn $${cornPrice.toFixed(2)}`,
+            label: `${plantingDateLabelFromValue(plantingDate)} - Nitrogen $${nPrice.toFixed(2)} - Corn $${cornPrice.toFixed(2)}`,
             cornPrice,
             nitroPrice: nPrice,
             points: dualCurveData.map((p)=>({
@@ -2510,7 +2515,7 @@ function Home() {
                                 priority: true
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1807,
+                                lineNumber: 1815,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -2521,7 +2526,7 @@ function Home() {
                                         children: "Optimum nitrogen rate"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1817,
+                                        lineNumber: 1825,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2529,13 +2534,13 @@ function Home() {
                                         children: "for corn"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1818,
+                                        lineNumber: 1826,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1816,
+                                lineNumber: 1824,
                                 columnNumber: 13
                             }, this),
                             !showLocationOptions ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].button, {
@@ -2557,7 +2562,7 @@ function Home() {
                                 children: "Start Analysis →"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1821,
+                                lineNumber: 1829,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex w-full max-w-lg flex-col gap-6",
@@ -2567,7 +2572,7 @@ function Home() {
                                         children: "How do you want to choose your field?"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1833,
+                                        lineNumber: 1841,
                                         columnNumber: 17
                                     }, this),
                                     geoSecureContext === false && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2578,7 +2583,7 @@ function Home() {
                                                 children: "GPS on your phone: "
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1838,
+                                                lineNumber: 1846,
                                                 columnNumber: 21
                                             }, this),
                                             "This page is opened as ",
@@ -2587,7 +2592,7 @@ function Home() {
                                                 children: "http://"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1839,
+                                                lineNumber: 1847,
                                                 columnNumber: 44
                                             }, this),
                                             " on a network address. Browsers ",
@@ -2595,7 +2600,7 @@ function Home() {
                                                 children: "will not show"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1840,
+                                                lineNumber: 1848,
                                                 columnNumber: 39
                                             }, this),
                                             " the location allow/deny sheet for that—use",
@@ -2604,7 +2609,7 @@ function Home() {
                                                 children: "Select location on map"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1841,
+                                                lineNumber: 1849,
                                                 columnNumber: 21
                                             }, this),
                                             ". For GPS, use ",
@@ -2612,7 +2617,7 @@ function Home() {
                                                 children: "https://"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1841,
+                                                lineNumber: 1849,
                                                 columnNumber: 75
                                             }, this),
                                             " (production) or ",
@@ -2620,14 +2625,14 @@ function Home() {
                                                 children: "localhost"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1842,
+                                                lineNumber: 1850,
                                                 columnNumber: 24
                                             }, this),
                                             " on your computer."
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1837,
+                                        lineNumber: 1845,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2646,7 +2651,7 @@ function Home() {
                                                         className: "h-16 w-16 text-[#CEB888]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1852,
+                                                        lineNumber: 1860,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2654,7 +2659,7 @@ function Home() {
                                                         children: "Select location on map"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1853,
+                                                        lineNumber: 1861,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2662,13 +2667,13 @@ function Home() {
                                                         children: "Indiana grid"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1856,
+                                                        lineNumber: 1864,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1846,
+                                                lineNumber: 1854,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2685,7 +2690,7 @@ function Home() {
                                                         className: "h-16 w-16 text-[#CEB888]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1865,
+                                                        lineNumber: 1873,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2693,7 +2698,7 @@ function Home() {
                                                         children: "Use current location"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1866,
+                                                        lineNumber: 1874,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2701,19 +2706,19 @@ function Home() {
                                                         children: geoLocating ? 'Getting location…' : 'GPS — Indiana only'
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1869,
+                                                        lineNumber: 1877,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 1858,
+                                                lineNumber: 1866,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1845,
+                                        lineNumber: 1853,
                                         columnNumber: 17
                                     }, this),
                                     geoError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2721,7 +2726,7 @@ function Home() {
                                         children: geoError
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1875,
+                                        lineNumber: 1883,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2734,24 +2739,24 @@ function Home() {
                                         children: "← Back"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1879,
+                                        lineNumber: 1887,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1832,
+                                lineNumber: 1840,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 1800,
+                        lineNumber: 1808,
                         columnNumber: 13
                     }, this)
                 }, "pre-dashboard", false, {
                     fileName: "[project]/src/app/indiana-app.tsx",
-                    lineNumber: 1793,
+                    lineNumber: 1801,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
                     initial: false,
@@ -2781,7 +2786,7 @@ function Home() {
                                             priority: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                            lineNumber: 1903,
+                                            lineNumber: 1911,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2797,7 +2802,7 @@ function Home() {
                                                     priority: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 1912,
+                                                    lineNumber: 1920,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2805,19 +2810,19 @@ function Home() {
                                                     children: "NRate IQ"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 1921,
+                                                    lineNumber: 1929,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                            lineNumber: 1911,
+                                            lineNumber: 1919,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 1902,
+                                    lineNumber: 1910,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2826,13 +2831,13 @@ function Home() {
                                     children: "Back to Home"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 1926,
+                                    lineNumber: 1934,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 1901,
+                            lineNumber: 1909,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -2887,21 +2892,21 @@ function Home() {
                                                                 provider: "OpenStreetMap.Mapnik"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                lineNumber: 1961,
+                                                                lineNumber: 1969,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(MapInvalidateSize, {
                                                                 trigger: `${showMapPanel}-${resultsSection}`
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                lineNumber: 1962,
+                                                                lineNumber: 1970,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(MapTapToContinue, {
                                                                 onTap: handleMapInteraction
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                lineNumber: 1963,
+                                                                lineNumber: 1971,
                                                                 columnNumber: 25
                                                             }, this),
                                                             (!showAONR || resultsSection === 'optimize') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(CellsLayer, {
@@ -2909,7 +2914,7 @@ function Home() {
                                                                 onSelectCell: setSelectedCellId
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                lineNumber: 1965,
+                                                                lineNumber: 1973,
                                                                 columnNumber: 27
                                                             }, this),
                                                             showAONR && resultsSection === 'trials' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(CountiesLayer, {
@@ -2932,7 +2937,7 @@ function Home() {
                                                                 onLoadError: setCountiesMapError
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                lineNumber: 1968,
+                                                                lineNumber: 1976,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GeoJSON, {
@@ -2945,18 +2950,18 @@ function Home() {
                                                                 }
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                lineNumber: 1985,
+                                                                lineNumber: 1993,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, isMobile ? 'ind-map-mobile' : 'ind-map-desktop', true, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 1940,
+                                                        lineNumber: 1948,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 1939,
+                                                    lineNumber: 1947,
                                                     columnNumber: 21
                                                 }, this),
                                                 !showAONR && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2969,7 +2974,7 @@ function Home() {
                                                             children: "Continue"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 1999,
+                                                            lineNumber: 2007,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2977,24 +2982,24 @@ function Home() {
                                                             children: "Tap the map to continue"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2010,
+                                                            lineNumber: 2018,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 1998,
+                                                    lineNumber: 2006,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                            lineNumber: 1938,
+                                            lineNumber: 1946,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 1937,
+                                        lineNumber: 1945,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3015,7 +3020,7 @@ function Home() {
                                                             color: "accent-black"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2023,
+                                                            lineNumber: 2031,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PriceInput, {
@@ -3028,18 +3033,18 @@ function Home() {
                                                             color: "accent-green-600"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2032,
+                                                            lineNumber: 2040,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 2022,
+                                                    lineNumber: 2030,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 2021,
+                                                lineNumber: 2029,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3056,7 +3061,7 @@ function Home() {
                                                         children: "Optimize Your Nitrogen Rate"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 2045,
+                                                        lineNumber: 2053,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3070,13 +3075,13 @@ function Home() {
                                                         children: "On-Farm Trials"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 2059,
+                                                        lineNumber: 2067,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 2044,
+                                                lineNumber: 2052,
                                                 columnNumber: 19
                                             }, this),
                                             !showAONR ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3090,17 +3095,17 @@ function Home() {
                                                         hideCurve: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                        lineNumber: 2081,
+                                                        lineNumber: 2089,
                                                         columnNumber: 25
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 2080,
+                                                    lineNumber: 2088,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                lineNumber: 2079,
+                                                lineNumber: 2087,
                                                 columnNumber: 21
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                                 children: resultsSection === 'optimize' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3114,7 +3119,7 @@ function Home() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2098,
+                                                            lineNumber: 2106,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3132,7 +3137,7 @@ function Home() {
                                                                                 children: "Planting date"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                lineNumber: 2108,
+                                                                                lineNumber: 2116,
                                                                                 columnNumber: 33
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3140,18 +3145,18 @@ function Home() {
                                                                                 children: "Select a planting window"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                lineNumber: 2111,
+                                                                                lineNumber: 2119,
                                                                                 columnNumber: 33
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                                        lineNumber: 2107,
+                                                                        lineNumber: 2115,
                                                                         columnNumber: 31
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2106,
+                                                                    lineNumber: 2114,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3172,19 +3177,19 @@ function Home() {
                                                                             children: window1.label
                                                                         }, window1.label, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2120,
+                                                                            lineNumber: 2128,
                                                                             columnNumber: 35
                                                                         }, this);
                                                                     })
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2116,
+                                                                    lineNumber: 2124,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2102,
+                                                            lineNumber: 2110,
                                                             columnNumber: 27
                                                         }, this),
                                                         !cellDataError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3202,7 +3207,7 @@ function Home() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2150,
+                                                                            lineNumber: 2158,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3213,13 +3218,13 @@ function Home() {
                                                                             children: "Save scenario"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2153,
+                                                                            lineNumber: 2161,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2149,
+                                                                    lineNumber: 2157,
                                                                     columnNumber: 31
                                                                 }, this),
                                                                 savedOptimizeScenarios.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3235,7 +3240,7 @@ function Home() {
                                                                                     "aria-hidden": true
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                    lineNumber: 2179,
+                                                                                    lineNumber: 2187,
                                                                                     columnNumber: 39
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3243,7 +3248,7 @@ function Home() {
                                                                                     children: scenario.label
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                    lineNumber: 2184,
+                                                                                    lineNumber: 2192,
                                                                                     columnNumber: 39
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3254,31 +3259,31 @@ function Home() {
                                                                                     children: "X"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                    lineNumber: 2185,
+                                                                                    lineNumber: 2193,
                                                                                     columnNumber: 39
                                                                                 }, this)
                                                                             ]
                                                                         }, scenario.id, true, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2175,
+                                                                            lineNumber: 2183,
                                                                             columnNumber: 37
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2173,
+                                                                    lineNumber: 2181,
                                                                     columnNumber: 33
                                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                     className: "mt-2 text-xs text-slate-500",
                                                                     children: "Save up to five scenarios to compare fixed curves."
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2197,
+                                                                    lineNumber: 2205,
                                                                     columnNumber: 33
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2148,
+                                                            lineNumber: 2156,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3291,7 +3296,7 @@ function Home() {
                                                                     isMobile: isMobile
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2205,
+                                                                    lineNumber: 2213,
                                                                     columnNumber: 31
                                                                 }, this),
                                                                 cellDataLoading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(SimulationLoadingOverlay, {
@@ -3299,13 +3304,13 @@ function Home() {
                                                                     statusMessage: LOADING_STATUS_MESSAGES[loadingWakeMessageIndex]
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2213,
+                                                                    lineNumber: 2221,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2203,
+                                                            lineNumber: 2211,
                                                             columnNumber: 27
                                                         }, this),
                                                         !cellDataError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3323,12 +3328,12 @@ function Home() {
                                                                         isMobile: isMobile
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                                                        lineNumber: 2225,
+                                                                        lineNumber: 2233,
                                                                         columnNumber: 33
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2221,
+                                                                    lineNumber: 2229,
                                                                     columnNumber: 31
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3342,7 +3347,7 @@ function Home() {
                                                                             children: "Price ratio"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2236,
+                                                                            lineNumber: 2244,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3350,7 +3355,7 @@ function Home() {
                                                                             children: "N / Corn"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2239,
+                                                                            lineNumber: 2247,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3358,7 +3363,7 @@ function Home() {
                                                                             children: priceRatio === null ? '—' : priceRatio.toFixed(3)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2240,
+                                                                            lineNumber: 2248,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         eonrProfitBandSummary && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dl", {
@@ -3372,7 +3377,7 @@ function Home() {
                                                                                             children: "Lower bound (N)"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                            lineNumber: 2246,
+                                                                                            lineNumber: 2254,
                                                                                             columnNumber: 39
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
@@ -3383,13 +3388,13 @@ function Home() {
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                            lineNumber: 2247,
+                                                                                            lineNumber: 2255,
                                                                                             columnNumber: 39
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                    lineNumber: 2245,
+                                                                                    lineNumber: 2253,
                                                                                     columnNumber: 37
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3400,7 +3405,7 @@ function Home() {
                                                                                             children: "Upper bound (N)"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                            lineNumber: 2252,
+                                                                                            lineNumber: 2260,
                                                                                             columnNumber: 39
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
@@ -3411,37 +3416,37 @@ function Home() {
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                            lineNumber: 2253,
+                                                                                            lineNumber: 2261,
                                                                                             columnNumber: 39
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                    lineNumber: 2251,
+                                                                                    lineNumber: 2259,
                                                                                     columnNumber: 37
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2244,
+                                                                            lineNumber: 2252,
                                                                             columnNumber: 35
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2232,
+                                                                    lineNumber: 2240,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2220,
+                                                            lineNumber: 2228,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 2096,
+                                                    lineNumber: 2104,
                                                     columnNumber: 25
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
                                                     className: "overflow-hidden rounded-3xl border border-dashed border-slate-300 bg-slate-50/80 p-8 shadow-inner sm:p-10",
@@ -3453,7 +3458,7 @@ function Home() {
                                                             children: countiesMapError
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2269,
+                                                            lineNumber: 2277,
                                                             columnNumber: 29
                                                         }, this),
                                                         isMobile && mobileTrialsView === 'map' && !countiesMapError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3461,7 +3466,7 @@ function Home() {
                                                             children: "Select your region on the map, then tap Continue."
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2274,
+                                                            lineNumber: 2282,
                                                             columnNumber: 29
                                                         }, this),
                                                         !isMobile || mobileTrialsView === 'results' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3471,7 +3476,7 @@ function Home() {
                                                                     isMobile: isMobile
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2281,
+                                                                    lineNumber: 2289,
                                                                     columnNumber: 33
                                                                 }, this),
                                                                 trialsRegionApiParam && eonrHistogramLoading && eonrHistogramBins.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3487,7 +3492,7 @@ function Home() {
                                                                             "aria-hidden": true
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2290,
+                                                                            lineNumber: 2298,
                                                                             columnNumber: 35
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3499,13 +3504,13 @@ function Home() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2298,
+                                                                            lineNumber: 2306,
                                                                             columnNumber: 35
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2286,
+                                                                    lineNumber: 2294,
                                                                     columnNumber: 33
                                                                 }, this),
                                                                 trialsRegionApiParam && eonrHistogramError && !eonrHistogramLoading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3513,7 +3518,7 @@ function Home() {
                                                                     children: eonrHistogramError
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2304,
+                                                                    lineNumber: 2312,
                                                                     columnNumber: 33
                                                                 }, this),
                                                                 trialsRegionApiParam && !eonrHistogramLoading && !eonrHistogramError && eonrHistogramBins.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3521,7 +3526,7 @@ function Home() {
                                                                     children: "No EONR histogram data for this region yet. The database may still be filling in trial summaries, or the region code may not match the backend."
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2312,
+                                                                    lineNumber: 2320,
                                                                     columnNumber: 35
                                                                 }, this),
                                                                 trialsRegionApiParam && eonrHistogramBins.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3534,7 +3539,7 @@ function Home() {
                                                                             accentHex: selectedRegionMapColor ?? DEFAULT_HISTOGRAM_ACCENT
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2320,
+                                                                            lineNumber: 2328,
                                                                             columnNumber: 35
                                                                         }, this),
                                                                         eonrHistogramLoading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3548,48 +3553,48 @@ function Home() {
                                                                                 "aria-label": "Updating histogram"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                                                                lineNumber: 2328,
+                                                                                lineNumber: 2336,
                                                                                 columnNumber: 39
                                                                             }, this)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                                            lineNumber: 2327,
+                                                                            lineNumber: 2335,
                                                                             columnNumber: 37
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                                    lineNumber: 2319,
+                                                                    lineNumber: 2327,
                                                                     columnNumber: 33
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                                            lineNumber: 2279,
+                                                            lineNumber: 2287,
                                                             columnNumber: 29
                                                         }, this) : null
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 2264,
+                                                    lineNumber: 2272,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2019,
+                                        lineNumber: 2027,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 1935,
+                                lineNumber: 1943,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 1934,
+                            lineNumber: 1942,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -3606,7 +3611,7 @@ function Home() {
                                         unoptimized: true
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2351,
+                                        lineNumber: 2359,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -3618,7 +3623,7 @@ function Home() {
                                         unoptimized: true
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2359,
+                                        lineNumber: 2367,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -3630,29 +3635,29 @@ function Home() {
                                         unoptimized: true
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2367,
+                                        lineNumber: 2375,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2350,
+                                lineNumber: 2358,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 2349,
+                            lineNumber: 2357,
                             columnNumber: 13
                         }, this)
                     ]
                 }, "dashboard", true, {
                     fileName: "[project]/src/app/indiana-app.tsx",
-                    lineNumber: 1894,
+                    lineNumber: 1902,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 1791,
+                lineNumber: 1799,
                 columnNumber: 7
             }, this),
             isMobile && showAONR && !mobileMapOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3674,40 +3679,40 @@ function Home() {
                                 d: "M3.8 6.2 11.9 3l8.3 3.2v11.6L12 21l-8.2-3.2z"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2396,
+                                lineNumber: 2404,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                 d: "M11.9 3v18"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2397,
+                                lineNumber: 2405,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                 d: "M20.2 6.2 12 9.3 3.8 6.2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2398,
+                                lineNumber: 2406,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2386,
+                        lineNumber: 2394,
                         columnNumber: 11
                     }, this),
                     "Select another location"
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2381,
+                lineNumber: 2389,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 1790,
+        lineNumber: 1798,
         columnNumber: 5
     }, this);
 }
@@ -3730,7 +3735,7 @@ function IndianaMapOptionIcon({ className }) {
                 rx: "4"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2420,
+                lineNumber: 2428,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -3740,7 +3745,7 @@ function IndianaMapOptionIcon({ className }) {
                 d: "M22 18h14l2 4v24l-3 6H24l-3-5V22z"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2421,
+                lineNumber: 2429,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -3751,7 +3756,7 @@ function IndianaMapOptionIcon({ className }) {
                 stroke: "none"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2427,
+                lineNumber: 2435,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -3759,13 +3764,13 @@ function IndianaMapOptionIcon({ className }) {
                 strokeWidth: "1.5"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2428,
+                lineNumber: 2436,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 2409,
+        lineNumber: 2417,
         columnNumber: 5
     }, this);
 }
@@ -3784,7 +3789,7 @@ function CompassLocationIcon({ className }) {
                 r: "22"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2436,
+                lineNumber: 2444,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -3792,7 +3797,7 @@ function CompassLocationIcon({ className }) {
                 strokeLinecap: "round"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2437,
+                lineNumber: 2445,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -3803,7 +3808,7 @@ function CompassLocationIcon({ className }) {
                 d: "m32 18 8 20-8 6-8-6z"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2438,
+                lineNumber: 2446,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -3816,13 +3821,13 @@ function CompassLocationIcon({ className }) {
                 children: "N"
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2445,
+                lineNumber: 2453,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 2435,
+        lineNumber: 2443,
         columnNumber: 5
     }, this);
 }
@@ -4089,7 +4094,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                         strokeWidth: "1.5"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2730,
+                        lineNumber: 2738,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -4101,7 +4106,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                         strokeWidth: "1.5"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2738,
+                        lineNumber: 2746,
                         columnNumber: 9
                     }, this),
                     [
@@ -4125,7 +4130,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                     strokeDasharray: "4 4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2751,
+                                    lineNumber: 2759,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -4139,13 +4144,13 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2760,
+                                    lineNumber: 2768,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, `p-${t}`, true, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 2750,
+                            lineNumber: 2758,
                             columnNumber: 13
                         }, this);
                     }),
@@ -4169,7 +4174,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                     strokeWidth: "1"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2772,
+                                    lineNumber: 2780,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -4180,13 +4185,13 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                     children: xValue.toFixed(0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2780,
+                                    lineNumber: 2788,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, `x-${t}`, true, {
                             fileName: "[project]/src/app/indiana-app.tsx",
-                            lineNumber: 2771,
+                            lineNumber: 2779,
                             columnNumber: 13
                         }, this);
                     }),
@@ -4202,12 +4207,12 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                             fillOpacity: 0.1
                                         }, `scenario-band-${scenario.id}-${idx}`, false, {
                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                            lineNumber: 2797,
+                                            lineNumber: 2805,
                                             columnNumber: 19
                                         }, this))
                                 }, `scenario-band-${scenario.id}`, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2795,
+                                    lineNumber: 2803,
                                     columnNumber: 15
                                 }, this)),
                             eonrProfitBandIntervals.map(([xL, xR], idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -4219,7 +4224,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                     fillOpacity: 0.2
                                 }, `eonr-profit-band-${idx}`, false, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2810,
+                                    lineNumber: 2818,
                                     columnNumber: 15
                                 }, this)),
                             comparisonSeries.map((scenario)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
@@ -4234,7 +4239,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                             strokeLinejoin: "round"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                            lineNumber: 2822,
+                                            lineNumber: 2830,
                                             columnNumber: 17
                                         }, this),
                                         scenario.eonrX !== null && scenario.eonrPt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -4250,7 +4255,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                                     strokeOpacity: 0.8
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 2833,
+                                                    lineNumber: 2841,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -4262,7 +4267,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                                     strokeWidth: "2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                                    lineNumber: 2843,
+                                                    lineNumber: 2851,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
@@ -4270,7 +4275,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                     ]
                                 }, `scenario-curve-${scenario.id}`, true, {
                                     fileName: "[project]/src/app/indiana-app.tsx",
-                                    lineNumber: 2821,
+                                    lineNumber: 2829,
                                     columnNumber: 15
                                 }, this)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -4282,7 +4287,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                 strokeLinejoin: "round"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2855,
+                                lineNumber: 2863,
                                 columnNumber: 13
                             }, this),
                             eonrX !== null && eonrPt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
@@ -4297,7 +4302,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                         strokeOpacity: 0.9
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2865,
+                                        lineNumber: 2873,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -4309,13 +4314,13 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                         strokeWidth: "2.5"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2874,
+                                        lineNumber: 2882,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2864,
+                                lineNumber: 2872,
                                 columnNumber: 15
                             }, this),
                             hoveredPoint && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -4330,7 +4335,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                         strokeDasharray: "5 5"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2887,
+                                        lineNumber: 2895,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -4342,7 +4347,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                         strokeWidth: "2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2896,
+                                        lineNumber: 2904,
                                         columnNumber: 17
                                     }, this)
                                 ]
@@ -4358,7 +4363,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                         fill: "rgba(15,23,42,0.92)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2909,
+                                        lineNumber: 2917,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -4372,7 +4377,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/indiana-app.tsx",
-                                        lineNumber: 2917,
+                                        lineNumber: 2925,
                                         columnNumber: 17
                                     }, this),
                                     visibleCurveEonrValues.map((entry, idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -4388,13 +4393,13 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                             ]
                                         }, `hover-eonr-${entry.key}`, true, {
                                             fileName: "[project]/src/app/indiana-app.tsx",
-                                            lineNumber: 2925,
+                                            lineNumber: 2933,
                                             columnNumber: 19
                                         }, this))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2908,
+                                lineNumber: 2916,
                                 columnNumber: 15
                             }, this)
                         ]
@@ -4407,7 +4412,7 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                         children: "Nitrogen rate (lb/ac)"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2943,
+                        lineNumber: 2951,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -4419,13 +4424,13 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                         children: "Profit ($/ac)"
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2951,
+                        lineNumber: 2959,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2721,
+                lineNumber: 2729,
                 columnNumber: 7
             }, this),
             !hideCurve && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4439,14 +4444,14 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                 "aria-hidden": true
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2968,
+                                lineNumber: 2976,
                                 columnNumber: 13
                             }, this),
                             "Profit (EONR highlighted)"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2967,
+                        lineNumber: 2975,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4457,26 +4462,26 @@ function DualAxisNitrogenChart({ points, eonrX, isMobile, hideCurve = false, com
                                 "aria-hidden": true
                             }, void 0, false, {
                                 fileName: "[project]/src/app/indiana-app.tsx",
-                                lineNumber: 2972,
+                                lineNumber: 2980,
                                 columnNumber: 13
                             }, this),
                             "N rates within $1/ac of max profit"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2971,
+                        lineNumber: 2979,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2966,
+                lineNumber: 2974,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 2720,
+        lineNumber: 2728,
         columnNumber: 5
     }, this);
 }
@@ -4492,7 +4497,7 @@ function PriceInput({ label, value, min, max, step, onChange, color }) {
                         children: label
                     }, void 0, false, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2988,
+                        lineNumber: 2996,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4503,13 +4508,13 @@ function PriceInput({ label, value, min, max, step, onChange, color }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/indiana-app.tsx",
-                        lineNumber: 2991,
+                        lineNumber: 2999,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2987,
+                lineNumber: 2995,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4522,13 +4527,13 @@ function PriceInput({ label, value, min, max, step, onChange, color }) {
                 className: `h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 ${color}`
             }, void 0, false, {
                 fileName: "[project]/src/app/indiana-app.tsx",
-                lineNumber: 2995,
+                lineNumber: 3003,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/indiana-app.tsx",
-        lineNumber: 2986,
+        lineNumber: 2994,
         columnNumber: 5
     }, this);
 }

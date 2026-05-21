@@ -182,7 +182,6 @@
     --color-slate-700: #314158;
     --color-slate-800: #1d293d;
     --color-slate-900: #0f172b;
-    --color-stone-200: #e7e5e4;
     --color-stone-400: #a6a09b;
     --color-stone-600: #57534d;
     --color-stone-800: #292524;
@@ -265,7 +264,6 @@
       --color-slate-700: lab(26.9569% -1.47016 -15.6993);
       --color-slate-800: lab(16.132% -.318035 -14.6672);
       --color-slate-900: lab(7.78673% 1.82345 -15.0537);
-      --color-stone-200: lab(91.055% .663072 .865579);
       --color-stone-400: lab(66.2166% 1.88044 3.20326);
       --color-stone-600: lab(35.5168% 1.08604 4.07829);
       --color-stone-800: lab(15.0353% 1.96067 1.53427);
@@ -1094,26 +1092,6 @@
     }
   }
 
-  .border-black\/50 {
-    border-color: #00000080;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .border-black\/50 {
-      border-color: color-mix(in oklab, var(--color-black) 50%, transparent);
-    }
-  }
-
-  .border-black\/70 {
-    border-color: #000000b3;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .border-black\/70 {
-      border-color: color-mix(in oklab, var(--color-black) 70%, transparent);
-    }
-  }
-
   .border-rose-200 {
     border-color: var(--color-rose-200);
   }
@@ -1273,16 +1251,6 @@
   @supports (color: color-mix(in lab, red, red)) {
     .bg-stone-400\/25 {
       background-color: color-mix(in oklab, var(--color-stone-400) 25%, transparent);
-    }
-  }
-
-  .bg-stone-800\/90 {
-    background-color: #292524e6;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .bg-stone-800\/90 {
-      background-color: color-mix(in oklab, var(--color-stone-800) 90%, transparent);
     }
   }
 
@@ -1715,10 +1683,6 @@
     color: var(--color-slate-900);
   }
 
-  .text-stone-200 {
-    color: var(--color-stone-200);
-  }
-
   .text-stone-600 {
     color: var(--color-stone-600);
   }
@@ -1910,12 +1874,6 @@
   }
 
   @media (hover: hover) {
-    .hover\:border-stone-950:hover {
-      border-color: var(--color-stone-950);
-    }
-  }
-
-  @media (hover: hover) {
     .hover\:bg-\[\#CEB888\]\/10:hover {
       background-color: #ceb8881a;
       background-color: lab(75.8149% 2.96199 27.4759 / .1);
@@ -1943,18 +1901,6 @@
   @media (hover: hover) {
     .hover\:bg-slate-200:hover {
       background-color: var(--color-slate-200);
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:bg-stone-950:hover {
-      background-color: var(--color-stone-950);
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:text-\[\#CEB888\]:hover {
-      color: #ceb888;
     }
   }
 
@@ -1994,10 +1940,6 @@
 
   .disabled\:opacity-60:disabled {
     opacity: .6;
-  }
-
-  .disabled\:opacity-100:disabled {
-    opacity: 1;
   }
 
   @media (min-width: 40rem) {

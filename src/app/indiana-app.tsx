@@ -42,6 +42,10 @@ const PLANTING_DATE_WINDOWS = [
 
 const DEFAULT_PLANTING_DATE = 1;
 
+function plantingDateLabelFromValue(value: number): string {
+  return PLANTING_DATE_WINDOWS.find((w) => w.value === value)?.label ?? `Planting ${value}`;
+}
+
 function ProviderTiles({ provider }: { provider: string }) {
   const map = useMap();
   const layerRef = useRef<import('leaflet').TileLayer | null>(null);
@@ -91,15 +95,19 @@ function SimulationLoadingOverlay({
   statusMessage: string;
 }) {
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-      <div className="flex max-w-sm flex-col items-center gap-4 rounded-2xl bg-white/70 px-6 py-6 text-center backdrop-blur-sm">
+    <div
+      className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-white"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <div className="flex max-w-sm flex-col items-center gap-4 px-6 py-6 text-center">
         <div
           className="h-8 w-8 shrink-0 animate-spin rounded-full border-4 border-[#CEB888]/30 border-t-[#CEB888]"
           aria-label="Loading"
         />
-        {showBackendWake && (
-          <p className="text-sm font-medium leading-snug text-slate-800">{statusMessage}</p>
-        )}
+        <p className="text-sm font-medium leading-snug text-slate-800">
+          {showBackendWake ? statusMessage : 'Loading simulation results…'}
+        </p>
       </div>
     </div>
   );
@@ -1646,7 +1654,7 @@ export default function Home() {
     const scenario: SavedOptimizeScenario = {
       id: `opt-scenario-${Date.now()}-${Math.round(Math.random() * 1e6)}`,
       color: nextColor,
-      label: `Cell ${selectedCellId} · N $${nPrice.toFixed(2)} · Corn $${cornPrice.toFixed(2)}`,
+      label: `${plantingDateLabelFromValue(plantingDate)} - Nitrogen $${nPrice.toFixed(2)} - Corn $${cornPrice.toFixed(2)}`,
       cornPrice,
       nitroPrice: nPrice,
       points: dualCurveData.map((p) => ({ ...p })),
